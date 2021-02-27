@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "888135530749",
+    "project_id": "paybook-d1355",
+    "storage_bucket": "paybook-d1355.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888135530749:android:d7ffe6ccb91f3ba54fe694",
+        "android_client_info": {
+          "package_name": "com.paybook_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888135530749-c6gqaovjojtblp2jos9o1d5pgj5e99sr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.paybook_app",
+            "certificate_hash": "96aa02c8ddbd1b305f5888ceb43b27cdab3240c8"
+          }
+        },
+        {
+          "client_id": "888135530749-d1pmaqkr5td0jq00s8gt0s2rantu27ir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoFfRzCvZ_HilSfeKa5IAUXAp1sbT4rI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888135530749-d1pmaqkr5td0jq00s8gt0s2rantu27ir.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

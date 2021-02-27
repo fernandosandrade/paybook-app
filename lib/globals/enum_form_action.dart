@@ -1,0 +1,1 @@
+enum EnumFormAction { INCLUIR, ALTERAR, INDEFINIDA }
