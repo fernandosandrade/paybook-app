@@ -4,12 +4,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 abstract class IAuthService {
   Future<FirebaseUser> getUser();
   Future<FirebaseUser> signInWithGoogle();
-  Future<FirebaseUser> signInWithEmailPassword({String email, String password});
+  Future<FirebaseUser> signInWithEmailPassword({required String email, required String password});
   Future signInWithFacebook();
   Future<String> getToken();
   Future logout();
   Stream<FirebaseUser> get onAuthStateChanged;
-  Future<AuthResult> createUser({String email, String password});
+  Future<AuthResult> createUser({required String email, required String password});
 }
 
 class AuthService implements IAuthService {
@@ -35,13 +35,18 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Future<FirebaseUser> signInWithEmailPassword({String email, String password}) async {
+  Future<FirebaseUser> signInWithEmailPassword({required String email, required String password}) async {
     final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     ))
         .user;
     return user;
+  }
+
+  @override
+  Future signInWithFacebook() {
+    throw UnimplementedError();
   }
 
   @override
@@ -60,15 +65,10 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Future signInWithFacebook() {
-    throw UnimplementedError();
-  }
-
-  @override
   Stream<FirebaseUser> get onAuthStateChanged => _auth.onAuthStateChanged;
 
   @override
-  Future<AuthResult> createUser({String email, String password}) async {
+  Future<AuthResult> createUser({required String email, required String password}) async {
     return await _auth.createUserWithEmailAndPassword(email: email, password: password);
   }
 }

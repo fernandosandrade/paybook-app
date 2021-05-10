@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../data/models/book_101_model.dart';
 import '../../../data/models/book_store_model.dart';
-import '../../../data/repositories/book_repository.dart';
+import '../../../services/book_service.dart';
 import '../../../globals/enum_form_action.dart';
 import '../../../utils/id_generator.dart';
 import '../../usuario/user_controller.dart';
@@ -22,13 +22,11 @@ class BookSimplesFormController extends GetxController {
   var isInAsyncCall = false.obs;
   var nomeBotao = ''.obs;
 
-  BookSimplesFormController({@required this.bookRepository});
+  BookSimplesFormController({required this.bookRepository});
 
   @override
   onInit() {
-    Get.parameters.containsKey('id_book')
-        ? _initFormAlterar(Get.parameters['id_book'])
-        : _initFormIncluir();
+    Get.parameters.containsKey('id_book') ? _initFormAlterar(Get.parameters['id_book']) : _initFormIncluir();
   }
 
   get formKey => this._formKey;
@@ -50,7 +48,7 @@ class BookSimplesFormController extends GetxController {
           idBook: IdGenerator.randomAlphanumeric(),
           idUsuario: userController.user.idUsuario,
           nomeBook: _nomeBookTextController.value.text);
-      book101Model.vencimento = DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch;
+      //book101Model.vencimento = DateTime.now().add(Duration(days: 1)).millisecondsSinceEpoch;
       //print('${novoBook.toJson()}');
       bookStoreModel = BookStoreModel.fromAbstractBaseModel(book101Model);
       msgRetorno = 'book ${book101Model.nomeBook} criado com sucesso.';

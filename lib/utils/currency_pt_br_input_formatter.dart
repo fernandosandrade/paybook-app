@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyPtBrInputFormatter extends TextInputFormatter {
-  CurrencyPtBrInputFormatter({this.maxDigits});
+  CurrencyPtBrInputFormatter({required this.maxDigits});
   final int maxDigits;
 
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
@@ -18,7 +18,6 @@ class CurrencyPtBrInputFormatter extends TextInputFormatter {
     final formatter = new NumberFormat("#,##0.00", "pt_BR");
     String newText = "R\$ " + formatter.format(value / 100);
     //String newText = formatter.format(value / 100);
-    return newValue.copyWith(
-        text: newText, selection: new TextSelection.collapsed(offset: newText.length));
+    return newValue.copyWith(text: newText, selection: new TextSelection.collapsed(offset: newText.length));
   }
 }

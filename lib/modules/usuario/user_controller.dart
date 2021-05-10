@@ -2,18 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paybook_app/modules/auth/enum_auth_status.dart';
 
 import '../../data/models/user_model.dart';
 import '../../data/repositories/users_repository.dart';
 import '../auth/auth_controller.dart';
 
 class UserController extends GetxController {
-  AuthController _authController;
-  IUsersRepository _usersRepository;
+  late AuthController _authController;
+  late IUsersRepository _usersRepository;
   Rx<UserModel> _userModel = UserModel().obs;
 
-  UserController(
-      {@required AuthController authController, @required IUsersRepository usersRepository}) {
+  UserController({required AuthController authController, required IUsersRepository usersRepository}) {
     this._authController = authController;
     this._usersRepository = usersRepository;
   }
@@ -21,7 +21,7 @@ class UserController extends GetxController {
   onInit() {
     // faz o tratamento do usuario de acordo com a mudanca do
     ever(_authController.status,
-        (status) => status == AuthStatus.LOGGED_IN ? _handleLoggedIn() : _handleLoggedOut());
+        (status) => status == EnumAuthStatus.LOGGED_IN ? _handleLoggedIn() : _handleLoggedOut());
   }
 
   UserModel get user => _userModel.value;

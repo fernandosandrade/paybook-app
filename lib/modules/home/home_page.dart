@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
                       ],
                     ))
                 .toList()),
-        FlatButton.icon(
+        TextButton.icon(
             onPressed: () => Get.toNamed(AppRoutes.NOVO_BOOK), icon: Icon(Ionicons.md_add), label: Text('novo book'))
       ],
     );
@@ -93,7 +93,7 @@ class HomePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(icon: Icon(Ionicons.md_close), onPressed: () => Get.back()),
-        FlatButton.icon(
+        TextButton.icon(
             onPressed: () => Get.find<AuthController>().signOut(), icon: Icon(Ionicons.md_exit), label: Text('sair')),
       ],
     );

@@ -1,22 +1,25 @@
-import 'package:json_annotation/json_annotation.dart';
-
-import 'models_definition.dart';
+import 'dart:convert';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+import 'package:paybook_app/globals/serializers.dart';
 
 part 'destinatario.g.dart';
 
-@JsonSerializable()
-class Destinatario extends IDestinatario {
-  String nome;
-  String email;
-  String telefone;
+abstract class Destinatario extends Object implements Built<Destinatario, DestinatarioBuilder> {
+  static Serializer<Destinatario> get serializer => _$destinatarioSerializer;
 
-  Destinatario({this.nome, this.email, this.telefone});
+  Destinatario._();
+  factory Destinatario([void Function(DestinatarioBuilder) updates]) = _$Destinatario;
 
-  factory Destinatario.fromJson(Map<String, dynamic> json) => _$DestinatarioFromJson(json);
+  String get nome;
+  String get email;
+  String get telefone;
 
-  Destinatario fromJson(Map<String, dynamic> json) {
-    return Destinatario.fromJson(json);
+  String toJson() {
+    return json.encode(serializers.serializeWith(Destinatario.serializer, this));
   }
 
-  Map<String, dynamic> toJson() => _$DestinatarioToJson(this);
+  static Destinatario? fromJson(String jsonString) {
+    return serializers.deserializeWith(Destinatario.serializer, json.decode(jsonString));
+  }
 }

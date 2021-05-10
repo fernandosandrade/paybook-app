@@ -6,12 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/book_abstract_base_model.dart';
 import '../../data/models/book_101_model.dart';
 import '../../data/models/book_store_model.dart';
-import '../../data/repositories/book_repository.dart';
+import '../../services/book_service.dart';
 import '../books/abstract_book_list.dart';
 import '../books/book_101/book_simples_list_page.dart';
 import '../usuario/user_controller.dart';
 
 class HomeController extends GetxController {
+  static const CURRENT_BOOK_ID_KEY = 'currentBookId';
   UserController _userController;
   BookRepository _bookRepository;
   var _currentBookId = ''.obs;
@@ -20,7 +21,7 @@ class HomeController extends GetxController {
 
   RxList<BookStoreModel> _bookList = List<BookStoreModel>().obs;
 
-  HomeController({@required UserController userController, @required BookRepository bookRepository}) {
+  HomeController({required UserController userController, required BookRepository bookRepository}) {
     assert(userController != null);
     assert(bookRepository != null);
     this._userController = userController;
@@ -40,7 +41,7 @@ class HomeController extends GetxController {
   changeBook(String bookId) {
     if (_bookList.map((book) => book.idBook).contains(bookId)) {
       _currentBookId.value = bookId;
-      SharedPreferences.getInstance().then((sp) => sp.setString('currentBookId', currentBookId.value));
+      SharedPreferences.getInstance().then((sp) => sp.setString(CURRENT_BOOK_ID_KEY, currentBookId.value));
     }
   }
 
@@ -69,9 +70,9 @@ class HomeController extends GetxController {
     ever(_currentBookId, currentBookChangeHandler);
 
     // na inicializacao do app, qnd o bind do _booList for concluido, carrego o book inicial
-    once(_bookList, (_) => SharedPreferences.getInstance().then((sp) => changeBook(sp.getString('currentBookId'))));
+    once(_bookList, (_) => SharedPreferences.getInstance().then((sp) => changeBook(sp.getString(CURRENT_BOOK_ID_KEY))));
 
-// faz a solicitacao das permissoes necessarias para utilizacao do aplicativo
+    // faz a solicitacao das permissoes necessarias para utilizacao do aplicativo
     checkPermissions();
   }
 

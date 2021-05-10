@@ -3,28 +3,25 @@ import 'package:meta/meta.dart';
 
 import '../../../data/models/book_101_model.dart';
 import '../../../data/models/cobranca_101_model.dart';
-import '../../../data/repositories/cobranca_simples_repository.dart';
+import '../../../services/cobranca_111_service.dart';
 
 class BookSimplesListController extends GetxController {
-  ICobrancaSimplesRepository _cobrancaSimplesRepository;
+  ICobranca111Service _cobrancaSimplesRepository;
   Book101Model _bookSimplesModel;
   RxList<Cobranca101Model> _cobrancaSimplesList = List<Cobranca101Model>().obs;
 
   BookSimplesListController(
-      {@required ICobrancaSimplesRepository cobrancaSimplesRepository,
-      @required Book101Model bookSimplesModel}) {
+      {required ICobranca111Service cobrancaSimplesRepository, required Book101Model bookSimplesModel}) {
     assert(cobrancaSimplesRepository != null);
     assert(bookSimplesModel != null);
     this._cobrancaSimplesRepository = cobrancaSimplesRepository;
     this._bookSimplesModel = bookSimplesModel;
-    _cobrancaSimplesList
-        .bindStream(_cobrancaSimplesRepository.listByBookId(_bookSimplesModel.idBook));
+    _cobrancaSimplesList.bindStream(_cobrancaSimplesRepository.listByBookId(_bookSimplesModel.idBook));
   }
 
   Book101Model get bookSimplesModel => this._bookSimplesModel;
 
-  void refresh() => _cobrancaSimplesList
-      .bindStream(_cobrancaSimplesRepository.listByBookId(_bookSimplesModel.idBook));
+  void refresh() => _cobrancaSimplesList.bindStream(_cobrancaSimplesRepository.listByBookId(_bookSimplesModel.idBook));
 
   RxList<Cobranca101Model> get cobrancaSimplesList => this._cobrancaSimplesList;
 

@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-import '../models/book_store_model.dart';
+import '../data/models/book_store_model.dart';
 
-abstract class IBookRepository {
+abstract class IBookService {
   Stream<List<BookStoreModel>> list(String idUsuario);
   Future save(BookStoreModel model);
   Future delete(BookStoreModel model);
@@ -11,12 +10,12 @@ abstract class IBookRepository {
   Future<Stream<BookStoreModel>> getByDocumentId(String documentId);
 }
 
-class BookRepository implements IBookRepository {
+class BookService implements IBookService {
   static const String BOOKS_COLLECTION = 'books';
   final Firestore firestore;
   final CollectionReference collectionReference = Firestore.instance.collection(BOOKS_COLLECTION);
 
-  BookRepository({@required this.firestore});
+  BookService({required this.firestore});
 
   @override
   Stream<List<BookStoreModel>> list(String idUsuario) {
@@ -28,10 +27,7 @@ class BookRepository implements IBookRepository {
 
   @override
   Future<BookStoreModel> getByBookId(String idBook) async {
-    return collectionReference
-        .where('id_book', isEqualTo: idBook)
-        .getDocuments()
-        .then((querySnapshot) {
+    return collectionReference.where('id_book', isEqualTo: idBook).getDocuments().then((querySnapshot) {
       var doc = querySnapshot.documents.first;
       var bookStoreModel = BookStoreModel.fromJson(doc.data);
       bookStoreModel.reference = doc.reference;
@@ -41,10 +37,7 @@ class BookRepository implements IBookRepository {
 
   @override
   Future<Stream<BookStoreModel>> getByDocumentId(String documentId) async {
-    return collectionReference
-        .document(documentId)
-        .snapshots()
-        .map((doc) => BookStoreModel.fromJson(doc.data));
+    return collectionReference.document(documentId).snapshots().map((doc) => BookStoreModel.fromJson(doc.data));
   }
 
   @override
