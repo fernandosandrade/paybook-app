@@ -1,47 +1,67 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:logging/logging.dart';
+import 'package:paybook_app/globals/serializers.dart';
+import 'package:paybook_app/routes/app_pages.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
 
-import '../../data/models/book_abstract_base_model.dart';
-import '../../data/models/book_101_model.dart';
-import '../../data/models/book_store_model.dart';
-import '../../services/book_service.dart';
-import '../books/abstract_book_list.dart';
-import '../books/book_101/book_simples_list_page.dart';
-import '../usuario/user_controller.dart';
+import 'package:paybook_app/services/book_service.dart';
+import 'package:paybook_app/data/models/book/book_basic_model.dart';
+import 'package:paybook_app/modules/books/no_book_page.dart';
+import 'package:paybook_app/modules/usuario/user_controller.dart';
+
+import 'home_content_delegate.dart';
 
 class HomeController extends GetxController {
-  static const CURRENT_BOOK_ID_KEY = 'currentBookId';
-  UserController _userController;
-  BookRepository _bookRepository;
+  final log = Logger('HomeController');
+  static const CURRENT_BOOK_KEY = 'current_book';
+  final UserController _userController;
+  final BookService _bookService;
+
   var _currentBookId = ''.obs;
-  BookAbstractBaseModel currentBook;
-  final bookListObs = AbstractBookList().obs;
 
-  RxList<BookStoreModel> _bookList = List<BookStoreModel>().obs;
+  // BookAbstractBaseModel currentBook;
+  // final bookListObs = AbstractBookList().obs;
+  final _rxHomeContent = HomeContentDelegate.from(NoBookPage()).obs;
+  var _bookList = <BookBasicModel?>[].obs;
 
-  HomeController({required UserController userController, required BookRepository bookRepository}) {
-    assert(userController != null);
-    assert(bookRepository != null);
-    this._userController = userController;
-    this._bookRepository = bookRepository;
-  }
+  HomeController({required UserController userController, required BookService bookService})
+      : _userController = userController,
+        _bookService = bookService;
 
   @override
   void onInit() {
     super.onInit();
+    log.info(Get.parameters[AppRoutes.parameter_book_id]);
     // qnd usuario estiver carregado, faço o init da home
     ever(_userController.rxUser, (user) {
       if (user != null) _doInit();
     });
   }
 
+  /// return home content
+  Widget homeContent() => _rxHomeContent.value.content();
+
+  /// returns the current book id (matches the documentID)
+  get currentBookId => this._currentBookId;
+
+  /// returns a list stream containing the user's books
+  RxList<BookBasicModel?> get bookList => _bookList;
+
   /// define um novo book a ser mostrado na home
-  changeBook(String bookId) {
-    if (_bookList.map((book) => book.idBook).contains(bookId)) {
-      _currentBookId.value = bookId;
-      SharedPreferences.getInstance().then((sp) => sp.setString(CURRENT_BOOK_ID_KEY, currentBookId.value));
+  changeBook(BookBasicModel? book) {
+    if (book != null) {
+      log.info('change book to [$book]');
+      if (_bookList.map((b) => b?.documentID).contains(book.documentID)) {
+        _currentBookId.value = book.documentID;
+        SharedPreferences.getInstance().then((sp) => sp.setString(CURRENT_BOOK_KEY, json.encode(book.toMap())));
+        Get.currentRoute == AppRoutes.HOME
+            ? Get.toNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.documentID))
+            : Get.offNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.documentID));
+      }
     }
   }
 
@@ -52,41 +72,34 @@ class HomeController extends GetxController {
     if (_currentBookId.value == bookId) {
       // se realmente é o book corrente, seto para null e em seguida para o bookId
       // desta forma forço o ever(_currentBookId) a executar
-      _currentBookId.value = null;
+      _currentBookId.value = '';
       _currentBookId.value = bookId;
     }
   }
 
-  get currentBookId => this._currentBookId;
+  // currentBookChangeHandler(String bookID) {
+  //   Get.toNamed(AppRoutes.open_book_101_build(bookID: bookID));
+  // _rxHomeContent.value = HomeContentDelegate.from(LoadingBookPage());
+  // this._bookService.getById(currentBookId.value).then((book) {
+  //   _rxHomeContent.value = HomeContentDelegate.from(NoBookPage());
+  // });
+  // }
 
-  RxList<BookStoreModel> get bookList => _bookList;
-
-  /// init da home
-  void _doInit() {
-    // crio stream para a lista de books do usuario
-    _bookList.bindStream(this._bookRepository.list(_userController.user.idUsuario));
-
-    // trato a alteracao do book apresentado na home
-    ever(_currentBookId, currentBookChangeHandler);
-
-    // na inicializacao do app, qnd o bind do _booList for concluido, carrego o book inicial
-    once(_bookList, (_) => SharedPreferences.getInstance().then((sp) => changeBook(sp.getString(CURRENT_BOOK_ID_KEY))));
-
-    // faz a solicitacao das permissoes necessarias para utilizacao do aplicativo
-    checkPermissions();
-  }
-
-  currentBookChangeHandler(bookId) {
-    bookListObs.value = AbstractBookList();
-    this._bookRepository.getByBookId(currentBookId.value).then((book) {
-      var bookSimplesModel = Book101Model.fromBookStoreModel(book);
-      bookListObs.value = BookSimplesListPage(bookSimplesModel);
-    });
-  }
+  // currentBookChangeHandler(bookId) {
+  //   bookListObs.value = AbstractBookList();
+  //   this._bookRepository.getByBookId(currentBookId.value).then((book) {
+  //     var bookSimplesModel = Book101Model.fromBookStoreModel(book);
+  //     bookListObs.value = BookSimplesListPage(bookSimplesModel);
+  //   });
+  // }
 
   void novaCobranca() {
-    bookListObs.value.novaCobranca();
+    _rxHomeContent.value.fabDelegate();
   }
+
+  // void novaCobranca() {
+  //   bookListObs.value.novaCobranca();
+  // }
 
   checkPermissions() {
     Permission.contacts.status.then((permission) {
@@ -94,5 +107,32 @@ class HomeController extends GetxController {
         Permission.contacts.request().then((status) => print(status));
       }
     });
+  }
+
+  /// home initialization.
+  ///
+  /// makes the necessary binds for the functioning of the home screen.
+  void _doInit() {
+    // crio stream para a lista de books do usuario
+    _bookList.bindStream(this._bookService.list(_userController.user?.documentID));
+
+    // trato a alteracao do book apresentado na home
+    // ever(_currentBookId, currentBookChangeHandler);
+
+    // na inicializacao do app, qnd o bind do _booList for concluido, carrego o book inicial
+    once(
+        _bookList,
+        (_) => SharedPreferences.getInstance().then((sp) {
+              var currentBookJson = sp.getString(CURRENT_BOOK_KEY);
+              if (currentBookJson != null) {
+                log.info('loading initial book...');
+                changeBook(serializers.fromJson(BookBasicModel.serializer, currentBookJson));
+              } else {
+                log.warning('no book in SharedPreferences');
+              }
+            }));
+
+    // faz a solicitacao das permissoes necessarias para utilizacao do aplicativo
+    checkPermissions();
   }
 }

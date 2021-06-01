@@ -1,52 +1,62 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paybook_app/modules/auth/enum_auth_status.dart';
+import 'package:logging/logging.dart';
+import 'package:paybook_app/services/enum_auth_status.dart';
+import 'package:paybook_app/services/users_service.dart';
 
 import '../../data/models/user_model.dart';
-import '../../data/repositories/users_repository.dart';
 import '../auth/auth_controller.dart';
 
+/// Controls the app user lifecicle
+///
+/// On loggin, searchs the user in repository, if exists, sets the _userModel. If not, saves the new user and set _userModel.
+/// On loggout, clear the user
 class UserController extends GetxController {
+  final log = Logger('UserController');
   late AuthController _authController;
-  late IUsersRepository _usersRepository;
-  Rx<UserModel> _userModel = UserModel().obs;
+  late IUserService _userService;
+  Rxn<UserModel> _userModel = Rxn<UserModel>();
 
-  UserController({required AuthController authController, required IUsersRepository usersRepository}) {
+  UserController({required AuthController authController, required IUserService userService}) {
     this._authController = authController;
-    this._usersRepository = usersRepository;
+    this._userService = userService;
   }
 
   onInit() {
-    // faz o tratamento do usuario de acordo com a mudanca do
+    // internal loggin and logout treatment
+    // deal with AuthController._userChangeHandle() changes
     ever(_authController.status,
         (status) => status == EnumAuthStatus.LOGGED_IN ? _handleLoggedIn() : _handleLoggedOut());
   }
 
-  UserModel get user => _userModel.value;
+  UserModel? get user => _userModel.value;
 
-  Rx<UserModel> get rxUser => _userModel;
+  set user(UserModel? value) => this._userModel.value = value;
 
-  set user(UserModel value) => this._userModel.value = value;
+  Rxn<UserModel> get rxUser => _userModel;
 
+  /// handle users loggin from [AuthController]
+  ///
+  /// searchs the user in repository, if exists, sets the _userModel. If not, saves the new user and set _userModel
   void _handleLoggedIn() {
-    log('user_controller loggedin ${_authController.user.email}');
-    _usersRepository.getUser(email: _authController.user.email).then((repoUser) => repoUser != null
+    var newUser = _authController.user;
+    log.info('logged in user [${newUser.email}]');
+    _userService.getUser(email: newUser.email!).then((repoUser) => repoUser != null
         ? user = repoUser
-        : _usersRepository
+        : _userService
             .save(UserModel(
-              idUsuario: _authController.user.uid,
-              email: _authController.user.email,
-              nome: _authController.user.displayName
-                  .split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
+              (s) => s
+                ..documentID = newUser.uid
+                ..email = newUser.email
+                ..nome = newUser.displayName!.split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
             ))
-            .then((value) => user = value));
+            .then((savedUser) => user = savedUser));
   }
 
   void _handleLoggedOut() {
-    log('user_controller loggedout');
-    _userModel.value = UserModel();
+    log.info('logged out user');
+    _userModel.value = null;
   }
 
   /*void clear() {

@@ -9,7 +9,8 @@ abstract class ICobranca111Service {
   Future save(Cobranca111Model model);
   Future delete(Cobranca111Model model);
   Future<Cobranca111Model?> findById(String bookId);
-  Stream<List<Cobranca111Model>> findByBookId(String bookId);
+  // Future<List<Cobranca111Model?>> findByBookId(String bookId)
+  Stream<List<Cobranca111Model?>> findByBookId(String bookId);
 }
 
 class Cobranca111Service implements ICobranca111Service {
@@ -20,8 +21,9 @@ class Cobranca111Service implements ICobranca111Service {
       [COBRANCA_COLLECTION, EnumTipoBook.B_101.codBook, EnumTipoCobranca.C_111.codCobranca]);
 
   @override
-  Future save(Cobranca111Model cobranca) async {
-    DocumentRepository.save(DBDocument.fromMap(data: cobranca.toMap(), repositoryCollectionPath: collectionPath));
+  Future save(Cobranca111Model cobranca) {
+    return DocumentRepository.save(
+        DBDocument.fromMap(data: cobranca.toMap(), repositoryCollectionPath: collectionPath));
     //var total = (await collectionReference.getDocuments()).documents.length;
     // if (model.reference == null) {
     //   model.reference = await collectionReference.add(model.toJson());
@@ -30,8 +32,10 @@ class Cobranca111Service implements ICobranca111Service {
     // }
   }
 
-  Future delete(Cobranca111Model model) {
-    return model.reference.delete();
+  Future delete(Cobranca111Model cobranca) {
+    return DocumentRepository.delete(
+        DBDocument.fromMap(data: cobranca.toMap(), repositoryCollectionPath: collectionPath));
+    // return model.reference.delete();
   }
 
   @override
@@ -42,11 +46,11 @@ class Cobranca111Service implements ICobranca111Service {
   }
 
   @override
-  Future<List<Cobranca111Model>> findByBookId(String bookId) {
-    return DocumentRepository.onCollection(this.collectionPath).findAll(field: "book_id", value: bookId).then(
+  Stream<List<Cobranca111Model?>> findByBookId(String bookId) {
+    return DocumentRepository.onCollection(this.collectionPath).findAllAsStream(field: "book_id", value: bookId).map(
         (docList) => docList.isNotEmpty
             ? docList.map((dbDoc) => dbDoc.toObject(Cobranca111Model.serializer)).toList()
-            : throw Exception('no cobranca found for idCobranca=$bookId.'));
+            : List.empty());
   }
 
   // @override

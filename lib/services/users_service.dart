@@ -13,29 +13,19 @@ abstract class IUserService {
 
 class UserService implements IUserService {
   static const String USERS_COLLECTION = 'users';
+  var userCollectionPath = RepositoryCollectionPath.of([USERS_COLLECTION]);
 
   @override
   Future<UserModel?> getUser({required String email}) async {
-    return DocumentRepository.onCollection(RepositoryCollectionPath.of([USERS_COLLECTION]))
+    return DocumentRepository.onCollection(userCollectionPath)
         .findFirst(field: "email", value: email)
         .then((dbDoc) => dbDoc?.toObject(UserModel.serializer));
-    // var documents =
-    //     (await RepositoryProvider.instance.collection(USERS_COLLECTION).where("email", isEqual To: email).getDocuments())
-    //         .documents;
-    // .map((e) => UserModel.fromJson(e.data));
-    // return dbDocument?.map((e) => UserModel.fromJson(e.data)).first;
   }
 
   @override
   Future save(UserModel user) async {
-    var dbDocument = DBDocument.fromMap(
-        data: user.toMap(), repositoryCollectionPath: RepositoryCollectionPath.of([USERS_COLLECTION]));
+    var dbDocument = DBDocument.fromMap(data: user.toMap(), repositoryCollectionPath: userCollectionPath);
     return DocumentRepository.save(dbDocument);
-    // if (model.reference == null) {
-    //   model.reference = await RepositoryProvider.instance.collection(USERS_COLLECTION).add(model.toJson());
-    // } else {
-    //   model.reference.updateData(model.toJson());
-    // }
   }
 
   @override

@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 
-import '../../routes/app_pages.dart';
-import '../../themes/default_icons.dart';
-import '../auth/auth_controller.dart';
-import '../usuario/user_controller.dart';
+import 'package:paybook_app/modules/auth/auth_controller.dart';
+import 'package:paybook_app/modules/usuario/user_controller.dart';
+import 'package:paybook_app/routes/app_pages.dart';
+import 'package:paybook_app/themes/default_icons.dart';
+
 import 'home_controller.dart';
 
-class HomePage extends StatelessWidget {
+abstract class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetX<HomeController>(
           init: Get.find<HomeController>(),
           builder: (_) {
-            return _.bookListObs.value.getBookList();
+            // return _.bookListObs.value.getBookList();
+            return homeContent();
           }),
-      bottomNavigationBar: new BottomAppBar(
+      bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        child: new Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             IconButton(
-              icon: Icon(Feather.menu),
               onPressed: () {
                 Get.bottomSheet(
                     Container(
@@ -39,31 +39,38 @@ class HomePage extends StatelessWidget {
                     ),
                     backgroundColor: Colors.white);
               },
+              icon: Icon(DefaultIcons.MENU),
             ),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Get.find<HomeController>().novaCobranca(),
+      floatingActionButton: Visibility(
+        visible: isFABUsed(), // FAB only visible for books. homescreen of empty book not have FAB
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          // onPressed: () => Get.find<HomeController>().novaCobranca(),
+          onPressed: fabAction,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 
+  /// BottomAppBar header
   Widget _cabecalho() {
     return GetX<UserController>(
         init: Get.find<UserController>(),
         builder: (_) {
           return ListTile(
             //dense: true,
-            title: Text('${_.user.nome} ${_.user.sobrenome}'),
-            subtitle: Text("${_.user.email}"),
-            trailing: Icon(DefaultIcons.ICONE_EDITAR_2),
+            title: Text('${_.user?.nome} ${_.user?.sobrenome}'),
+            subtitle: Text("${_.user?.email}"),
+            trailing: Icon(DefaultIcons.EDIT_1),
           );
         });
   }
 
+  /// BottomAppBar booklist
   Widget _books() {
     var value = Get.find<HomeController>().bookList.value;
     return Column(
@@ -76,26 +83,35 @@ class HomePage extends StatelessWidget {
                         Expanded(
                           child: ListTile(
                               leading: Icon(DefaultIcons.BOOK_1, color: Colors.black),
-                              title: Text('${_book.nomeBook}'),
-                              onTap: () => Get.find<HomeController>().changeBook(_book.idBook)),
+                              title: Text('${_book?.nomeBook}'),
+                              onTap: () => Get.find<HomeController>().changeBook(_book)),
                         ),
                       ],
                     ))
                 .toList()),
         TextButton.icon(
-            onPressed: () => Get.toNamed(AppRoutes.NOVO_BOOK), icon: Icon(Ionicons.md_add), label: Text('novo book'))
+            onPressed: () => Get.toNamed(AppRoutes.NOVO_BOOK), icon: Icon(DefaultIcons.ADD), label: Text('novo book'))
       ],
     );
   }
 
+  /// BottonAppBar commands
   Widget _logout() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(icon: Icon(Ionicons.md_close), onPressed: () => Get.back()),
+        IconButton(icon: Icon(DefaultIcons.CLOSE), onPressed: () => Get.back()),
         TextButton.icon(
-            onPressed: () => Get.find<AuthController>().signOut(), icon: Icon(Ionicons.md_exit), label: Text('sair')),
+            onPressed: () => Get.find<AuthController>().signOut(),
+            icon: Icon(DefaultIcons.LOGOUT),
+            label: Text('sair')),
       ],
     );
   }
+
+  Widget homeContent();
+
+  bool isFABUsed();
+
+  Function fabAction();
 }

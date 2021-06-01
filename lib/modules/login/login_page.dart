@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:paybook_app/themes/default_icons.dart';
 
 import '../auth/auth_controller.dart';
 import 'login_controller.dart';
@@ -13,9 +13,9 @@ import 'login_controller.dart';
 
 //class _LoginPageState extends State<LoginPage> {
 class LoginPage extends StatelessWidget {
-  final GlobalKey formKey = GlobalKey<FormState>();
-  String _email;
-  String _senha;
+  final formKey = GlobalKey<FormState>();
+  String? _email;
+  String? _senha;
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +82,17 @@ class LoginPage extends StatelessWidget {
   Widget _loginGoogleButton() {
     var auth = Get.find<AuthController>();
     var loginController = Get.find<LoginController>();
-    return FlatButton(
-      color: Colors.redAccent,
-      padding: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    return TextButton(
+      style: TextButton.styleFrom(
+        primary: Colors.redAccent,
+        padding: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Icon(
-            AntDesign.google,
+            DefaultIcons.google,
             color: Colors.white,
           ),
           Text(
@@ -106,21 +108,24 @@ class LoginPage extends StatelessWidget {
         await auth
             .loginWithGoogle()
             //.then((value) => Get.offNamed(AppRoutes.HOME))
-            .then((value) => loginController.isInAsyncCall.value = false);
+            .then((value) => loginController.isInAsyncCall.value = false,
+                onError: (error) => Get.snackbar('loggin erros', 'occurrer an erros while loggin with google'));
       },
     );
   }
 
   Widget _loginFacebooButton() {
-    return FlatButton(
-        color: Color(0xff4267b2),
-        padding: EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    return TextButton(
+        style: TextButton.styleFrom(
+          primary: Color(0xff4267b2),
+          padding: EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Icon(
-              AntDesign.facebook_square,
+              DefaultIcons.facebook,
               color: Colors.white,
             ),
             Text(
@@ -143,12 +148,12 @@ class LoginPage extends StatelessWidget {
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: 'email',
           prefixIcon: Icon(
-            Ionicons.md_mail,
+            DefaultIcons.EMAIL_1,
             color: Colors.grey,
           ),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))),
-      validator: (value) => GetUtils.isEmail(value) ?? 'email invalido',
-      onSaved: (value) => _email = value.trim(),
+      validator: (value) => GetUtils.isEmail(value!) ? null : 'email invalido',
+      onSaved: (value) => _email = value?.trim(),
       //),
     );
   }
@@ -160,21 +165,23 @@ class LoginPage extends StatelessWidget {
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           hintText: "senha",
           prefixIcon: Icon(
-            Ionicons.md_lock,
+            DefaultIcons.LOCK,
             color: Colors.grey,
           ),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))),
       validator: (value) =>
-          GetUtils.isLengthGreaterOrEqual(value, 8) ?? 'senha deve possuir no mínimo 8 caracteres',
-      onSaved: (value) => _senha = value.trim(),
+          GetUtils.isLengthGreaterOrEqual(value, 8) ? null : 'senha deve possuir no mínimo 8 caracteres',
+      onSaved: (value) => _senha = value?.trim(),
     );
   }
 
   Widget _loginButton() {
-    return FlatButton(
-      color: Colors.blueGrey,
-      padding: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    return TextButton(
+      style: TextButton.styleFrom(
+        primary: Colors.blueGrey,
+        padding: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -184,19 +191,19 @@ class LoginPage extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
           Icon(
-            AntDesign.login,
+            DefaultIcons.LOGIN,
             color: Colors.white,
             size: 32,
           ),
         ],
       ),
       onPressed: () async {
-        final FormState form = formKey.currentState;
+        final FormState form = formKey.currentState!;
         if (form.validate()) {
           form.save();
           Get.find<AuthController>().loginWithEmailPassword(
-            email: _email,
-            password: _senha,
+            email: _email!,
+            password: _senha!,
           );
         }
       },
@@ -204,21 +211,19 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _registerUserButton() {
-    return FlatButton(
+    return TextButton(
         child: Row(
           children: <Widget>[
-            Icon(AntDesign.adduser, size: 14),
+            Icon(DefaultIcons.ADD_USER, size: 14),
             Text(' novo usuario', style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic))
           ],
         ),
-        onPressed: () =>
-            Get.snackbar('registro de usuario', 'registro de usuario nao implementado'));
+        onPressed: () => Get.snackbar('registro de usuario', 'registro de usuario nao implementado'));
   }
 
   Widget _forgotPasswordButton() {
-    return FlatButton(
-        child: Text('esqueceu sua senha?',
-            style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+    return TextButton(
+        child: Text('esqueceu sua senha?', style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
         onPressed: () => Get.snackbar('recuperar senha', 'recuperacao de senha nao implementado'));
   }
 }

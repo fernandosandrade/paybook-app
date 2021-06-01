@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class IAuthService {
-  Future<FirebaseUser> getUser();
-  Future<FirebaseUser> signInWithGoogle();
-  Future<FirebaseUser> signInWithEmailPassword({required String email, required String password});
+  User? getUser();
+  Future<User> signInWithGoogle();
+  Future<User> signInWithEmailPassword({required String email, required String password});
   Future signInWithFacebook();
   Future<String> getToken();
   Future logout();
-  Stream<FirebaseUser> get onAuthStateChanged;
-  Future<AuthResult> createUser({required String email, required String password});
+  Stream<User?> get onAuthStateChanged;
+  Future<UserCredential> createUser({required String email, required String password});
 }
 
 class AuthService implements IAuthService {
@@ -17,16 +17,16 @@ class AuthService implements IAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
-  Future<FirebaseUser> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+  Future<User> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = (await _googleSignIn.signIn())!;
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    final User user = (await _auth.signInWithCredential(credential)).user!;
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
@@ -35,12 +35,12 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Future<FirebaseUser> signInWithEmailPassword({required String email, required String password}) async {
-    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+  Future<User> signInWithEmailPassword({required String email, required String password}) async {
+    final User user = (await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     ))
-        .user;
+        .user!;
     return user;
   }
 
@@ -50,8 +50,8 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Future<FirebaseUser> getUser() {
-    return _auth.currentUser();
+  User? getUser() {
+    return _auth.currentUser;
   }
 
   @override
@@ -65,10 +65,10 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Stream<FirebaseUser> get onAuthStateChanged => _auth.onAuthStateChanged;
+  Stream<User?> get onAuthStateChanged => _auth.authStateChanges();
 
   @override
-  Future<AuthResult> createUser({required String email, required String password}) async {
+  Future<UserCredential> createUser({required String email, required String password}) async {
     return await _auth.createUserWithEmailAndPassword(email: email, password: password);
   }
 }

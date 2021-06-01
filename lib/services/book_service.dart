@@ -1,57 +1,41 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../data/models/book_store_model.dart';
+import 'package:paybook_app/data/models/book/book_basic_model.dart';
+import 'package:paybook_app/data/repository/document_repository.dart';
+import 'package:paybook_app/data/repository/repository_collection_path.dart';
 
 abstract class IBookService {
-  Stream<List<BookStoreModel>> list(String idUsuario);
-  Future save(BookStoreModel model);
-  Future delete(BookStoreModel model);
-  Future<BookStoreModel> getByBookId(String idBook);
-  Future<Stream<BookStoreModel>> getByDocumentId(String documentId);
+  Future<BookBasicModel?> getById(String idBook);
+
+  /// returns a stream whit books for the especified user.
+  ///
+  /// if pass null, return a ``List.empty``
+  Stream<List<BookBasicModel?>> list(String idUsuario);
 }
 
 class BookService implements IBookService {
   static const String BOOKS_COLLECTION = 'books';
-  final Firestore firestore;
-  final CollectionReference collectionReference = Firestore.instance.collection(BOOKS_COLLECTION);
-
-  BookService({required this.firestore});
+  final RepositoryCollectionPath booksCollectionPath = RepositoryCollectionPath.of([BOOKS_COLLECTION]);
 
   @override
-  Stream<List<BookStoreModel>> list(String idUsuario) {
-    return collectionReference
-        .where('id_usuario', isEqualTo: idUsuario)
-        .snapshots()
-        .map((query) => query.documents.map((doc) => BookStoreModel.fromJson(doc.data)).toList());
-  }
-
-  @override
-  Future<BookStoreModel> getByBookId(String idBook) async {
-    return collectionReference.where('id_book', isEqualTo: idBook).getDocuments().then((querySnapshot) {
-      var doc = querySnapshot.documents.first;
-      var bookStoreModel = BookStoreModel.fromJson(doc.data);
-      bookStoreModel.reference = doc.reference;
-      return bookStoreModel;
-    });
-  }
-
-  @override
-  Future<Stream<BookStoreModel>> getByDocumentId(String documentId) async {
-    return collectionReference.document(documentId).snapshots().map((doc) => BookStoreModel.fromJson(doc.data));
-  }
-
-  @override
-  Future save(BookStoreModel model) async {
-    //var total = (await collectionReference.getDocuments()).documents.length;
-
-    if (model.reference == null) {
-      model.reference = await collectionReference.add(model.toJson());
+  Stream<List<BookBasicModel?>> list(String? idUsuario) {
+    if (idUsuario != null) {
+      return DocumentRepository.onCollection(booksCollectionPath)
+          .findAllAsStream(field: 'id_usuario', value: idUsuario)
+          .map((docList) => docList.map((doc) => doc.toObject(BookBasicModel.serializer)).toList());
     } else {
-      model.reference.updateData(model.toJson());
+      return Stream.value(List.empty());
     }
   }
 
-  Future delete(BookStoreModel model) {
-    return model.reference.delete();
+  @override
+  Future<BookBasicModel?> getById(String idBook) async {
+    return DocumentRepository.onCollection(booksCollectionPath)
+        .findByID(idBook)
+        .then((doc) => doc?.toObject(BookBasicModel.serializer));
+    // return collectionReference.where('id_book', isEqualTo: idBook).getDocuments().then((querySnapshot) {
+    //   var doc = querySnapshot.documents.first;
+    //   var bookStoreModel = BookStoreModel.fromJson(doc.data);
+    //   bookStoreModel.reference = doc.reference;
+    //   return bookStoreModel;
+    // });
   }
 }

@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:paybook_app/services/users_service.dart';
 
-import '../../data/repositories/users_repository.dart';
 import '../auth/auth_controller.dart';
-import '../auth/auth_service.dart';
+import '../../services/auth_service.dart';
 import '../usuario/user_controller.dart';
 
 class RootBinding extends Bindings {
@@ -11,9 +10,7 @@ class RootBinding extends Bindings {
   void dependencies() {
     Get.put<AuthController>(AuthController(authService: Get.put(AuthService())), permanent: true);
     Get.put<UserController>(
-        UserController(
-            authController: Get.find<AuthController>(),
-            usersRepository: Get.put(UsersRepository(firestore: Firestore.instance))),
+        UserController(authController: Get.find<AuthController>(), userService: Get.put(UserService())),
         permanent: true);
   }
 }

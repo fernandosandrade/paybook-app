@@ -5,6 +5,7 @@ import 'package:paybook_app/data/repository/repository_provider.dart';
 /// Defines access to documents for some collection from the repository
 abstract class IRepositoryCollection {
   Future<DBDocument?> findByID(String documentID);
+  Stream<DBDocument?> findByIDAsStream(String documentID);
   Future<DBDocument?> findFirst({required String field, required Object value});
   Future<List<DBDocument>> findAll({required String field, required Object value});
   Stream<List<DBDocument>> findAllAsStream({required String field, required Object value});
@@ -21,6 +22,11 @@ class RepositoryCollection implements IRepositoryCollection {
   @override
   Future<DBDocument?> findByID(String documentID) {
     return collectionReference.doc(documentID).get().then((doc) => DBDocument.fromDocumentSnapshot(doc));
+  }
+
+  @override
+  Stream<DBDocument?> findByIDAsStream(String documentID) {
+    return collectionReference.doc(documentID).snapshots().map((doc) => DBDocument.fromDocumentSnapshot(doc));
   }
 
   @override

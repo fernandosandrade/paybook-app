@@ -2,18 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paybook_app/services/enum_tipo_book.dart';
 
 import '../../routes/app_pages.dart';
-import 'enum_tipo_de_book.dart';
 
 /// apresenta os tipos de ook possiveis ao usuario.
 ///
 /// identificando o desejado, o usuario seleciona o tipo de book, e é direcionado para a pagina de criacao do mesmo.
 class NovoBookPage extends StatelessWidget {
-  static const Map<EnumTipoDeBook, Widget> listasDeCobranca = {
-    EnumTipoDeBook.SIMPLES: Text('nova lista de cobranca simples'),
-    EnumTipoDeBook.RECORRENTE_COM_VALOR_BASE: Text('lista de cobranca recorrente'),
-    EnumTipoDeBook.RATEIO: Text('lista de cobranca por rateio'),
+  static const Map<EnumTipoBook, Widget> listasDeCobranca = {
+    EnumTipoBook.B_101: Text('nova lista de cobranca simples'),
+    EnumTipoBook.B_201: Text('lista de cobranca recorrente'),
   };
 
   @override
@@ -39,26 +38,22 @@ class NovoBookPage extends StatelessWidget {
                               children: listasDeCobranca.values.map((e) {
                         return Center(child: e);
                       }).toList())),
-                      RaisedButton(
+                      ElevatedButton(
                           child: Text("criar!"),
-                          onPressed: () => criarListaDeCobranca(listasDeCobranca.entries
-                              .elementAt(DefaultTabController.of(context).index)
-                              .key))
+                          onPressed: () => criarListaDeCobranca(
+                              listasDeCobranca.entries.elementAt(DefaultTabController.of(context)!.index).key))
                     ],
                   ),
                 )));
   }
 
-  Future<void> criarListaDeCobranca(EnumTipoDeBook tipoBook) async {
+  Future<void> criarListaDeCobranca(EnumTipoBook tipoBook) async {
     switch (tipoBook) {
-      case EnumTipoDeBook.SIMPLES:
+      case EnumTipoBook.B_101:
         Get.toNamed(AppRoutes.BOOK_SIMPLES_FORM);
         break;
-      case EnumTipoDeBook.RECORRENTE_COM_VALOR_BASE:
+      case EnumTipoBook.B_201:
         print('recorrente');
-        break;
-      case EnumTipoDeBook.RATEIO:
-        print('rateio');
         break;
       default:
     }

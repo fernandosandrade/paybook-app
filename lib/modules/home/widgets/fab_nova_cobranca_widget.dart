@@ -5,9 +5,8 @@ class FabNovaCobrancaWidget extends StatefulWidget {
   State createState() => new _FabNovaCobrancaWidgetState();
 }
 
-class _FabNovaCobrancaWidgetState extends State<FabNovaCobrancaWidget>
-    with TickerProviderStateMixin {
-  AnimationController _controller;
+class _FabNovaCobrancaWidgetState extends State<FabNovaCobrancaWidget> with TickerProviderStateMixin {
+  late AnimationController _controller;
 
   static const List<IconData> icons = const [Icons.star, Icons.attach_money];
 

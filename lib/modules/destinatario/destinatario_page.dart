@@ -3,15 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../themes/default_icons.dart';
-import '../../utils/phone_number_input_formatter.dart';
-import '../../widgets/custom_widget.dart';
 import 'destinatario_controller.dart';
 
 class DestinatarioPage extends GetView<DestinatarioController> {
+  // String? _nome;
+  // String? _telefone;
+  // String? _email;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomWidget.appbar(titulo: 'destinatário'),
+      appBar: AppBar(title: Text('destinatário')),
       body: _form(),
     );
   }
@@ -43,13 +45,13 @@ class DestinatarioPage extends GetView<DestinatarioController> {
     return TextFormField(
       controller: controller.nomeController,
       keyboardType: TextInputType.name,
-      onSaved: (value) => controller.destinatario.nome = value,
-      decoration: InputDecoration(icon: Icon(DefaultIcons.USUARIO_1), labelText: 'nome'),
+      // onSaved: (value) => nome = value,
+      decoration: InputDecoration(icon: Icon(DefaultIcons.USER_1), labelText: 'nome'),
       enableSuggestions: true,
       //maxLength: 32,
       //style: TextStyle(fontSize: 20),
       validator: (value) {
-        if (!GetUtils.isUsername(GetUtils.removeAllWhitespace(value))) {
+        if (!GetUtils.isUsername(GetUtils.removeAllWhitespace(value!))) {
           return 'Insira um nome válido';
         } else
           return null;
@@ -61,9 +63,9 @@ class DestinatarioPage extends GetView<DestinatarioController> {
     return TextFormField(
       controller: controller.telefoneController,
       keyboardType: TextInputType.phone,
-      onSaved: (value) => controller.destinatario.telefone = value,
+      // onSaved: (value) => telefone = value,
       decoration: InputDecoration(
-        icon: Icon(DefaultIcons.TELEFONE_1),
+        icon: Icon(DefaultIcons.PHONE_1),
         labelText: "telefone",
         //hintText: '(51) 123-456-789',
       ),
@@ -71,7 +73,7 @@ class DestinatarioPage extends GetView<DestinatarioController> {
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       //style: TextStyle(fontSize: 20),
       validator: (value) {
-        if (GetUtils.isPhoneNumber(value) || GetUtils.isPhoneNumber('(00)$value')) {
+        if (GetUtils.isPhoneNumber(value!) || GetUtils.isPhoneNumber('(00)$value')) {
           return null;
         } else
           return 'Insira um telefone válido';
@@ -83,13 +85,13 @@ class DestinatarioPage extends GetView<DestinatarioController> {
     return TextFormField(
       controller: controller.emailController,
       keyboardType: TextInputType.emailAddress,
-      onSaved: (value) => controller.destinatario.email = value,
+      // onSaved: (value) => email = value,
       decoration: InputDecoration(icon: Icon(DefaultIcons.EMAIL_1), labelText: 'email'),
       enableSuggestions: true,
       //maxLength: 32,
       //style: TextStyle(fontSize: 20),
       validator: (value) {
-        if (!GetUtils.isEmail(value)) {
+        if (!GetUtils.isEmail(value!)) {
           return 'Insira um email válido';
         } else
           return null;
@@ -99,8 +101,8 @@ class DestinatarioPage extends GetView<DestinatarioController> {
 
   _botoes() {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      RaisedButton(child: Text('ver contatos'), onPressed: () => controller.pickContact()),
-      RaisedButton(child: Text('ok'), onPressed: () => controller.salvar())
+      ElevatedButton(child: Text('ver contatos'), onPressed: () => controller.pickContact()),
+      ElevatedButton(child: Text('ok'), onPressed: () => controller.salvar())
     ]);
   }
 }

@@ -39,7 +39,7 @@ class DBDocument {
   }
 
   /// deserializes this instance with the specified serializer
-  T? toObject<T extends CobrancaBaseModel>(Serializer<T> serializer) {
+  T? toObject<T extends DocumentRepositoryModel>(Serializer<T> serializer) {
     this.data.addAll({DocumentRepositoryModel.DOCUMENT_ID: this.id()});
     return serializers.fromJson(serializer, json.encode(data));
   }

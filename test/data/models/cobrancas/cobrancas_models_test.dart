@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paybook_app/data/models/cobranca/cobranca_111_model.dart';
 import 'package:paybook_app/data/models/destinatario.dart';
+import 'package:paybook_app/data/repository/db_document.dart';
+import 'package:paybook_app/data/repository/repository_collection_path.dart';
 
 void main() {
   test('serialization/deserialization test', () {

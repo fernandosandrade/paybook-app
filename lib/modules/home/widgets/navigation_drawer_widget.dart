@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paybook_app/globals/default_messagem.dart';
 import '../../auth/auth_controller.dart';
 import '../../usuario/user_controller.dart';
-
 
 class NavigationDrawerWidget extends StatelessWidget {
   final String title;
 
-  NavigationDrawerWidget({Key key, this.title}) : super(key: key);
+  NavigationDrawerWidget({required Key key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     UserController userController = Get.find<UserController>();
     AuthController authController = Get.find<AuthController>();
 
+    var userName = userController.user != null ? userController.user!.nome : DefaultMessagem.NOT_AVALIABLE;
+    var userEmail = userController.user != null ? userController.user!.email : DefaultMessagem.NOT_AVALIABLE;
     final drawerHeader = UserAccountsDrawerHeader(
-      accountName: Text(userController.user.nome),
-      accountEmail: Text(userController.user.email),
+      accountName: Text(userName),
+      accountEmail: Text(userEmail),
       currentAccountPicture: CircleAvatar(
         child: FlutterLogo(size: 42),
         backgroundColor: Colors.white,
