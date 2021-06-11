@@ -18,7 +18,7 @@ class Cobranca111Service implements ICobranca111Service {
   //final CollectionReference collectionReference = RepositoryProvider.instance.collection(COBRANCA_SIMPLES_COLLECTION);
   //final DocumentRepository repository;
   final RepositoryCollectionPath collectionPath = RepositoryCollectionPath.of(
-      [COBRANCA_COLLECTION, EnumTipoBook.B_101.codBook, EnumTipoCobranca.C_111.codCobranca]);
+      [COBRANCA_COLLECTION, EnumTipoBook.B_101.wireNumber, EnumTipoCobranca.C_111.wireNumber]);
 
   @override
   Future save(Cobranca111Model cobranca) {

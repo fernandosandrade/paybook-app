@@ -11,6 +11,8 @@ part 'book_base_model.g.dart';
 /// must not be instantiated
 @BuiltValue(instantiable: false)
 abstract class BookBaseModel implements DocumentRepositoryModel {
+  static const String ID_BOOK_FIELD_NAME = "id_book";
+
   @BuiltValueField(wireName: "id_usuario")
   String get idUsuario;
 

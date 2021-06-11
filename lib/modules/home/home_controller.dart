@@ -10,10 +10,7 @@ import 'package:get/get.dart';
 
 import 'package:paybook_app/services/book_service.dart';
 import 'package:paybook_app/data/models/book/book_basic_model.dart';
-import 'package:paybook_app/modules/books/no_book_page.dart';
 import 'package:paybook_app/modules/usuario/user_controller.dart';
-
-import 'home_content_delegate.dart';
 
 class HomeController extends GetxController {
   final log = Logger('HomeController');
@@ -25,7 +22,7 @@ class HomeController extends GetxController {
 
   // BookAbstractBaseModel currentBook;
   // final bookListObs = AbstractBookList().obs;
-  final _rxHomeContent = HomeContentDelegate.from(NoBookPage()).obs;
+  //final _rxHomeContent = HomeContentDelegate.from(NoBookPage()).obs;
   var _bookList = <BookBasicModel?>[].obs;
 
   HomeController({required UserController userController, required BookService bookService})
@@ -35,7 +32,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    log.info(Get.parameters[AppRoutes.parameter_book_id]);
+    log.info('navegation parameter ${AppRoutes.parameter_book_id}=${Get.parameters[AppRoutes.parameter_book_id]}');
     // qnd usuario estiver carregado, faço o init da home
     ever(_userController.rxUser, (user) {
       if (user != null) _doInit();
@@ -43,7 +40,7 @@ class HomeController extends GetxController {
   }
 
   /// return home content
-  Widget homeContent() => _rxHomeContent.value.content();
+  //Widget homeContent() => _rxHomeContent.value.content();
 
   /// returns the current book id (matches the documentID)
   get currentBookId => this._currentBookId;
@@ -55,12 +52,13 @@ class HomeController extends GetxController {
   changeBook(BookBasicModel? book) {
     if (book != null) {
       log.info('change book to [$book]');
-      if (_bookList.map((b) => b?.documentID).contains(book.documentID)) {
-        _currentBookId.value = book.documentID;
+      if (_bookList.map((b) => b?.id).contains(book.id)) {
+        _currentBookId.value = book.id;
         SharedPreferences.getInstance().then((sp) => sp.setString(CURRENT_BOOK_KEY, json.encode(book.toMap())));
+        // Get.printInstanceStack();
         Get.currentRoute == AppRoutes.HOME
-            ? Get.toNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.documentID))
-            : Get.offNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.documentID));
+            ? Get.toNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.id))
+            : Get.offNamed(AppRoutes.homeBookBuild(tipoBook: book.tipoBook, bookID: book.id));
       }
     }
   }
@@ -93,9 +91,9 @@ class HomeController extends GetxController {
   //   });
   // }
 
-  void novaCobranca() {
-    _rxHomeContent.value.fabDelegate();
-  }
+  // void novaCobranca() {
+  //   _rxHomeContent.value.fabDelegate();
+  // }
 
   // void novaCobranca() {
   //   bookListObs.value.novaCobranca();
@@ -114,7 +112,7 @@ class HomeController extends GetxController {
   /// makes the necessary binds for the functioning of the home screen.
   void _doInit() {
     // crio stream para a lista de books do usuario
-    _bookList.bindStream(this._bookService.list(_userController.user?.documentID));
+    _bookList.bindStream(this._bookService.list(_userController.user?.id));
 
     // trato a alteracao do book apresentado na home
     // ever(_currentBookId, currentBookChangeHandler);

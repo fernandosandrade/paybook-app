@@ -47,7 +47,7 @@ class UserController extends GetxController {
         : _userService
             .save(UserModel(
               (s) => s
-                ..documentID = newUser.uid
+                ..id = newUser.uid
                 ..email = newUser.email
                 ..nome = newUser.displayName!.split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
             ))

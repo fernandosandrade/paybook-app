@@ -1,6 +1,10 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:paybook_app/data/models/destinatario.dart';
 import 'package:paybook_app/data/repository/document_repository_model.dart';
+import 'package:paybook_app/services/enum_cobranca_status.dart';
+
+import '../payment_link_preview_model.dart';
 
 part 'cobranca_base_model.g.dart';
 
@@ -19,7 +23,10 @@ abstract class CobrancaBaseModel implements DocumentRepositoryModel {
 
   Destinatario get destinatario;
 
-  String get status;
+  EnumCobrancaStatus get status;
+
+  @BuiltValueField(wireName: "links_pagamento")
+  BuiltList<PaymentLinkPreviewModel> get linksPagamento;
 
   CobrancaBaseModel rebuild(void Function(CobrancaBaseModelBuilder) updates);
   CobrancaBaseModelBuilder toBuilder();

@@ -6,7 +6,7 @@ part 'document_repository_model.g.dart';
 /// Base model for all repository documents.
 @BuiltValue(instantiable: false)
 abstract class DocumentRepositoryModel {
-  static const String DOCUMENT_ID = "document_id";
+  static const String ID = "id";
 
   /// The document id.
   ///
@@ -15,6 +15,9 @@ abstract class DocumentRepositoryModel {
   /// When the object is converted to [DBDocument], it is removed from the ``Map data`` and transformed to the repository document id.
   ///
   /// The reverse occurs whit the deserialization: repository document id is included to map by the [DBDocument toObject] and used in deserialization.
-  @BuiltValueField(wireName: DOCUMENT_ID)
-  String get documentID;
+  @BuiltValueField(wireName: ID)
+  String get id;
+
+  /// return this document as map
+  Map<String, dynamic> toMap();
 }

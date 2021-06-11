@@ -10,7 +10,7 @@ import 'package:paybook_app/services/enum_tipo_book.dart';
 void main() {
   test('book basic model teste', () {
     var bookBasicModel = BookBasicModel((s) => s
-      ..documentID = '123'
+      ..id = '123'
       ..idUsuario = 'user_id'
       ..nomeBook = 'nome_book'
       ..tipoBook = EnumTipoBook.B_101);
@@ -20,7 +20,7 @@ void main() {
         DBDocument.fromMap(data: map, repositoryCollectionPath: RepositoryCollectionPath.of(["collection"]));
     var object = dbDocument.toObject(BookBasicModel.serializer);
     expect(bookBasicModel, object);
-    expect('101', object!.tipoBook.codBook);
+    expect('101', object!.tipoBook.wireNumber);
 
     String encode = json.encode(map);
     BookBasicModel? fromJson = serializers.fromJson(BookBasicModel.serializer, encode);

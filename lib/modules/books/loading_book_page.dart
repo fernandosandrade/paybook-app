@@ -4,15 +4,15 @@ import 'package:paybook_app/modules/home/home_content_page.dart';
 
 class LoadingBookPage implements HomeContentPage {
   @override
-  Widget content() {
+  Widget body() {
     return Center(child: CircularProgressIndicator());
   }
 
   @override
-  void fabDelegate() {}
+  void fabAction() {}
 
   @override
-  bool fabIsUsed() {
+  bool isFABUsed() {
     return false;
   }
 }

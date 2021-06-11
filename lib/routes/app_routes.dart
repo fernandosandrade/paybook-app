@@ -9,7 +9,7 @@ abstract class AppRoutes {
 
   /// builds a route to open the informed book on home screen
   static String homeBookBuild({required EnumTipoBook tipoBook, required String bookID}) {
-    return '/home/book/${tipoBook.codBook}/$bookID';
+    return '/home/book/${tipoBook.wireNumber}/$bookID';
   }
 
   static const book_101_home = '/home/book/101/:$parameter_book_id';
@@ -34,5 +34,3 @@ abstract class AppRoutes {
   /// pagina para edicao do destinatario da cobranca
   static const DESTINATARIO = '/destinatario';
 }
-
-abstract class DynamicRouteBuilder {}

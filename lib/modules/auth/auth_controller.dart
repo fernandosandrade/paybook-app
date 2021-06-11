@@ -35,13 +35,13 @@ class AuthController extends GetxController {
 
   void _handleNotLogged() {
     status.value = EnumAuthStatus.NOT_LOGGED;
-    log.info('auth_controller => status [${status.value}]');
+    log.info('status [${status.value}]');
     Get.offAllNamed(AppRoutes.LOGIN);
   }
 
   void _handleLoggedIn() {
     status.value = EnumAuthStatus.LOGGED_IN;
-    log.info('auth_controller => status [${status.value}]');
+    log.info('status [${status.value}]');
     Get.offAllNamed(AppRoutes.HOME);
   }
 

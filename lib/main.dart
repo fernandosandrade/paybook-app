@@ -13,7 +13,6 @@ import 'themes/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(name: "plink").then((value) => log("firebase initialized. " + value.toString()));
   await Firebase.initializeApp()
       .then((value) => log("firebase initialized. " + FirebaseFirestore.instance.app.options.projectId));
   Logger.root.level = Level.ALL; // defaults to Level.INFO
