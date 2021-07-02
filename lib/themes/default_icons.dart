@@ -48,4 +48,10 @@ class DefaultIcons {
   static const IconData google = FontAwesome.google;
 
   static const IconData facebook = Icons.facebook;
+
+  static const IconData vencimento = Icons.access_alarm;
+
+  static const IconData copia = Icons.content_copy;
+
+  static const IconData conta = Icons.account_balance;
 }

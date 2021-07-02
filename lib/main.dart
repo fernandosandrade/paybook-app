@@ -13,11 +13,12 @@ import 'themes/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp()
-      .then((value) => log("firebase initialized. " + FirebaseFirestore.instance.app.options.projectId));
+  await Firebase.initializeApp().then((value) => log("firebase initialized. " +
+      FirebaseFirestore.instance.app.options.projectId));
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen(
-      (record) => print('[${record.level.name}] ${record.time.toUtc()}: ${record.loggerName} => ${record.message}'));
+      (record) => print('[${record.level.name}] ${record.time.toUtc()}: '
+          '${record.loggerName} => ${record.message}'));
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: AppRoutes.INITIAL,

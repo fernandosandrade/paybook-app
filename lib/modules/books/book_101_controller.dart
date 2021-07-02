@@ -1,31 +1,47 @@
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:paybook_app/data/models/cobranca/cobranca_111_model.dart';
-import 'package:paybook_app/routes/app_pages.dart';
+import 'package:paybook_app/data/models/book/book_101_model.dart';
+import 'package:paybook_app/data/models/charge/charge_111_model.dart';
+import 'package:paybook_app/services/book_service.dart';
 import 'package:paybook_app/services/cobranca_service.dart';
-import 'package:paybook_app/services/enum_tipo_book.dart';
-import 'package:paybook_app/services/enum_tipo_cobranca.dart';
 
 class Book101Controller extends GetxController {
   final log = Logger('Book101Controller');
 
-  final String? bookId;
+  final String bookId;
 
-  final CobrancaService<Cobranca111Model> cobrancaService;
+  final isLoading = true.obs;
 
-  final _chargesList = <Cobranca111Model?>[].obs;
+  final book101modelStream = Rxn<Book101Model>();
 
-  Book101Controller()
-      : this.cobrancaService = CobrancaService(
-            book: EnumTipoBook.B_101, cobranca: EnumTipoCobranca.C_111, serializer: Cobranca111Model.serializer),
-        this.bookId = Get.parameters[AppRoutes.parameter_book_id];
+  final _chargesListStream = <Charge111Model?>[].obs;
+
+  final BookService<Book101Model> bookService;
+
+  final CobrancaService<Charge111Model> cobrancaService;
+
+  Book101Controller(
+      {required this.cobrancaService, required this.bookId, required this.bookService});
+
+  // : this.cobrancaService = CobrancaService(
+  //       book: EnumTipoBook.B_101,
+  //       cobranca: EnumTipoCobranca.C_111,
+  //       serializer: Charge111Model.serializer),
+  //   this.bookId = Get.parameters[AppRoutes.Books.parameterBookId];
 
   @override
   void onReady() {
-    var parameter = Get.parameters[AppRoutes.parameter_book_id];
-    log.info('new instance. AppRoutes.parameter_book_id[$parameter]');
+    log.info('new instance. AppRoutes.parameter_book_id[${this.bookId}]');
 
-    _chargesList.bindStream(this.cobrancaService.findByBookId(this.bookId!));
+    _chargesListStream.bindStream(this.cobrancaService.findByBookId(this.bookId));
+
+    bookService.getById(this.bookId).then((book) {
+      if (book != null) {
+        this.book101modelStream.value = book;
+      } else
+        log.warning('no book was found for bookId=[$bookId]');
+      this.isLoading.value = false;
+    });
     // change(null, status: RxStatus.loading());
     // if (this.bookId != null) {
     //   try {
@@ -38,7 +54,14 @@ class Book101Controller extends GetxController {
     // }
   }
 
-  RxList<Cobranca111Model?> get chargesStream => this._chargesList;
+  RxList<Charge111Model?> get chargesListStream => this._chargesListStream;
 
-  int? get totalCobrancas => this._chargesList.value?.length;
+  int get totalCobrancas => this._chargesListStream.length;
+
+  double get totalValue => this._chargesListStream.isEmpty
+      ? 0.0
+      : List<Charge111Model>.from(this._chargesListStream)
+          .map((e) => e.valor)
+          .reduce((value, element) => value + element)
+          .toDouble();
 }

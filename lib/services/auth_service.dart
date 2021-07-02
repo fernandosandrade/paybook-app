@@ -30,7 +30,6 @@ class AuthService implements IAuthService {
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
     return user;
   }
 

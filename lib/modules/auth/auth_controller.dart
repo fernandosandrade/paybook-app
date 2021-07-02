@@ -12,6 +12,7 @@ import '../../services/auth_service.dart';
 class AuthController extends GetxController {
   final log = Logger('AuthController');
   final IAuthService authService;
+
   //IUsersRepository _usersRepository;
   Rxn<User> _firebaseUser = Rxn<User>();
   Rx<EnumAuthStatus> status = EnumAuthStatus.UNDETERMINED.obs;
@@ -30,41 +31,23 @@ class AuthController extends GetxController {
 
   /// Evaluates every user change to deal with signin and signout
   void _userChangeHandle() {
-    ever(_firebaseUser, (firebaseUser) => firebaseUser == null ? _handleNotLogged() : _handleLoggedIn());
+    ever(_firebaseUser, (firebaseUser) => firebaseUser == null ? _handleNotLogged() : _handleLoggedIn(),
+        onError: () => log.severe('error while listening firebaseUser'));
   }
 
   void _handleNotLogged() {
     status.value = EnumAuthStatus.NOT_LOGGED;
-    log.info('status [${status.value}]');
+    log.info('user status [${status.value}]');
     Get.offAllNamed(AppRoutes.LOGIN);
   }
 
   void _handleLoggedIn() {
     status.value = EnumAuthStatus.LOGGED_IN;
-    log.info('status [${status.value}]');
+    log.info('user status [${status.value}]');
     Get.offAllNamed(AppRoutes.HOME);
   }
 
   User get user => _firebaseUser.value!;
-
-  // void createUser(String name, String email, String password) async {
-  //   try {
-  //     UserCredential _authResult = await authService.createUser(email: email.trim(), password: password);
-  //     // cria o usuario na base de dados
-  //     UserModel _user = UserModel(
-  //       (s) => s
-  //         ..idUsuario = _authResult.user.uid
-  //         ..email = _authResult.user.email
-  //         ..nome = name.split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
-  //     );
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Error creating Account",
-  //       e.toString(),
-  //       snackPosition: SnackPosition.BOTTOM,
-  //     );
-  //   }
-  // }
 
   /// realiza o login com o google
   ///

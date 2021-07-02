@@ -7,7 +7,7 @@ class Book201Controller extends GetxController {
 
   @override
   void onReady() {
-    var parameter = Get.parameters[AppRoutes.parameter_book_id];
+    var parameter = Get.parameters[AppRoutes.Books.parameterBookId];
     log.info('nova instancia => $parameter');
   }
 }

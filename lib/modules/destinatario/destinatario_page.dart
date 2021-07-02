@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:paybook_app/themes/default_icons.dart';
 
-import '../../themes/default_icons.dart';
 import 'destinatario_controller.dart';
 
 class DestinatarioPage extends GetView<DestinatarioController> {

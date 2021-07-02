@@ -74,11 +74,11 @@ class HomePageWidget extends StatelessWidget {
   Widget _bottomAppBarHeader() {
     return GetX<UserController>(
         init: Get.find<UserController>(),
-        builder: (_) {
+        builder: (userController) {
           return ListTile(
             //dense: true,
-            title: Text('${_.user?.nome} ${_.user?.sobrenome}'),
-            subtitle: Text("${_.user?.email}"),
+            title: Text('${userController.user?.nome} ${userController.user?.sobrenome}'),
+            subtitle: Text("${userController.user?.email}"),
             trailing: Icon(DefaultIcons.EDIT_1),
           );
         });
@@ -88,13 +88,13 @@ class HomePageWidget extends StatelessWidget {
   Widget _books() {
     return GetX<HomeController>(
         init: Get.find<HomeController>(),
-        builder: (_) {
-          var value = Get.find<HomeController>().bookList.value;
+        builder: (homeController) {
+          // var value = homeController.bookListStream.value;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
-                  children: value
+                  children: homeController.bookListStream
                       .map((_book) => Row(
                             children: [
                               Expanded(

@@ -6,8 +6,6 @@ import 'package:paybook_app/globals/serializers.dart';
 part 'user_model.g.dart';
 
 abstract class UserModel extends Object implements DocumentRepositoryModel, Built<UserModel, UserModelBuilder> {
-  static Serializer<UserModel> get serializer => _$userModelSerializer;
-
   UserModel._();
 
   factory UserModel([void Function(UserModelBuilder) updates]) = _$UserModel;
@@ -21,6 +19,8 @@ abstract class UserModel extends Object implements DocumentRepositoryModel, Buil
   String? get telefone;
 
   String? get cep;
+
+  static Serializer<UserModel> get serializer => _$userModelSerializer;
 
   Map<String, dynamic> toMap() {
     var serialized = serializers.serializeWith(UserModel.serializer, this) as Map<String, dynamic>;
