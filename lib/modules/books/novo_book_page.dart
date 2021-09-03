@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paybook_app/services/enum_tipo_book.dart';
+import 'package:paybook_app/data/models/book/abstract_book_base_model.dart';
+import 'package:paybook_app/data/models/book/book_basic_model.dart';
+import 'package:paybook_app/services/enum_book_type.dart';
 
 import '../../routes/app_pages.dart';
 
@@ -10,9 +12,9 @@ import '../../routes/app_pages.dart';
 ///
 /// identificando o desejado, o usuario seleciona o tipo de book, e é direcionado para a pagina de criacao do mesmo.
 class NovoBookPage extends StatelessWidget {
-  static const Map<EnumTipoBook, Widget> listasDeCobranca = {
-    EnumTipoBook.B_101: Text('nova lista de cobranca simples'),
-    EnumTipoBook.B_201: Text('lista de cobranca recorrente'),
+  static const Map<EnumBookType, Widget> listasDeCobranca = {
+    EnumBookType.B_101: Text('nova lista de cobranca simples'),
+    EnumBookType.B_201: Text('lista de cobranca recorrente'),
   };
 
   @override
@@ -40,23 +42,32 @@ class NovoBookPage extends StatelessWidget {
                       }).toList())),
                       ElevatedButton(
                           child: Text("criar!"),
-                          onPressed: () => criarListaDeCobranca(
-                              listasDeCobranca.entries.elementAt(DefaultTabController.of(context)!.index).key))
+                          onPressed: () => criarBook(listasDeCobranca.entries
+                              .elementAt(DefaultTabController.of(context)!.index)
+                              .key))
                     ],
                   ),
                 )));
   }
 
-  Future<void> criarListaDeCobranca(EnumTipoBook tipoBook) async {
+  Future<void> criarBook(EnumBookType tipoBook) async {
+    Future? future;
     switch (tipoBook) {
-      case EnumTipoBook.B_101:
-        Get.toNamed(AppRoutes.BOOK_SIMPLES_FORM);
+      case EnumBookType.B_101:
+        future = Get.toNamed(AppRoutes.Books.newBook101FormURLTemplate);
         break;
-      case EnumTipoBook.B_201:
-        print('recorrente');
+      case EnumBookType.B_201:
+        Get.toNamed(AppRoutes.Books.newBook201FormURLTemplate);
         break;
       default:
     }
+    assert(future != null);
+    // if (future != null) {
+    future!.then((bookId) {
+      assert(bookId != null);
+      Get.back(result: bookId);
+    });
+    // }
   }
 
 /*

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:paybook_app/modules/auth/auth_controller.dart';
 import 'package:paybook_app/modules/usuario/user_controller.dart';
@@ -14,9 +15,9 @@ class HomePageWidget extends StatelessWidget {
 
   final Widget list;
 
-  bool isFABUsed;
+  final bool isFABUsed;
 
-  Function fabAction;
+  final Function fabAction;
 
   HomePageWidget({
     required this.headerWidget,
@@ -87,32 +88,32 @@ class HomePageWidget extends StatelessWidget {
   /// BottomAppBar booklist
   Widget _books() {
     return GetX<HomeController>(
-        init: Get.find<HomeController>(),
+        // init: Get.find<HomeController>(),
         builder: (homeController) {
-          // var value = homeController.bookListStream.value;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                  children: homeController.bookListStream
-                      .map((_book) => Row(
-                            children: [
-                              Expanded(
-                                child: ListTile(
-                                    leading: Icon(DefaultIcons.BOOK_1, color: Colors.black),
-                                    title: Text('${_book?.nomeBook}'),
-                                    onTap: () => Get.find<HomeController>().changeBook(_book)),
-                              ),
-                            ],
-                          ))
-                      .toList()),
-              TextButton.icon(
-                  onPressed: () => Get.toNamed(AppRoutes.NOVO_BOOK),
-                  icon: Icon(DefaultIcons.ADD),
-                  label: Text('new book'))
-            ],
-          );
-        });
+      // var value = homeController.bookListStream.value;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+              children: homeController.bookListStream
+                  .map((_book) => Row(
+                        children: [
+                          Expanded(
+                            child: ListTile(
+                                leading: Icon(DefaultIcons.BOOK_1, color: Colors.black),
+                                title: Text('${_book!.name}'),
+                                onTap: () => homeController.changeBook(_book!.id)),
+                          ),
+                        ],
+                      ))
+                  .toList()),
+          TextButton.icon(
+              onPressed: () => homeController.newBook(),
+              icon: Icon(DefaultIcons.ADD),
+              label: Text('novo book'))
+        ],
+      );
+    });
   }
 
   /// BottonAppBar commands

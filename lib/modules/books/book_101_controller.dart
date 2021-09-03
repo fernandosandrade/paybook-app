@@ -3,22 +3,22 @@ import 'package:logging/logging.dart';
 import 'package:paybook_app/data/models/book/book_101_model.dart';
 import 'package:paybook_app/data/models/charge/charge_111_model.dart';
 import 'package:paybook_app/services/book_service.dart';
-import 'package:paybook_app/services/cobranca_service.dart';
+import 'package:paybook_app/services/charge_service.dart';
 
 class Book101Controller extends GetxController {
   final log = Logger('Book101Controller');
 
   final String bookId;
 
-  final isLoading = true.obs;
+  final isLoading = false.obs;
 
-  final book101modelStream = Rxn<Book101Model>();
+  final _book101modelStream = Rxn<Book101Model>();
 
   final _chargesListStream = <Charge111Model?>[].obs;
 
   final BookService<Book101Model> bookService;
 
-  final CobrancaService<Charge111Model> cobrancaService;
+  final ChargeService<Charge111Model> cobrancaService;
 
   Book101Controller(
       {required this.cobrancaService, required this.bookId, required this.bookService});
@@ -33,15 +33,11 @@ class Book101Controller extends GetxController {
   void onReady() {
     log.info('new instance. AppRoutes.parameter_book_id[${this.bookId}]');
 
-    _chargesListStream.bindStream(this.cobrancaService.findByBookId(this.bookId));
+    _chargesListStream.bindStream(this.cobrancaService.listAll());
 
-    bookService.getById(this.bookId).then((book) {
-      if (book != null) {
-        this.book101modelStream.value = book;
-      } else
-        log.warning('no book was found for bookId=[$bookId]');
-      this.isLoading.value = false;
-    });
+    // _book101modelStream.bindStream(Stream.fromFuture(bookService.getById(this.bookId)));
+
+    loadBook();
     // change(null, status: RxStatus.loading());
     // if (this.bookId != null) {
     //   try {
@@ -56,12 +52,34 @@ class Book101Controller extends GetxController {
 
   RxList<Charge111Model?> get chargesListStream => this._chargesListStream;
 
+  Rxn<Book101Model> get book101modelStream => this._book101modelStream;
+
   int get totalCobrancas => this._chargesListStream.length;
 
-  double get totalValue => this._chargesListStream.isEmpty
-      ? 0.0
+  int get totalValue => this._chargesListStream.isEmpty
+      ? 0
       : List<Charge111Model>.from(this._chargesListStream)
-          .map((e) => e.valor)
+          .map((e) => e.amount)
           .reduce((value, element) => value + element)
-          .toDouble();
+          .toInt();
+
+  loadBook() {
+    this.isLoading.value = true;
+    bookService.getById(this.bookId).then((book) {
+      if (book != null) {
+        this._book101modelStream.value = book;
+      } else
+        log.warning('no book was found for bookId=[$bookId]');
+      this.isLoading.value = false;
+    });
+  }
+
+  deleteBook() {
+    assert(this._book101modelStream.value != null);
+    this.isLoading.value = true;
+    bookService.delete(this._book101modelStream.value!).then((_) {
+      // log.warning('no book was found for bookId=[$bookId]');
+      this.isLoading.value = false;
+    });
+  }
 }

@@ -5,16 +5,16 @@ import 'package:paybook_app/data/models/book/book_101_model.dart';
 
 import 'package:paybook_app/data/models/book/book_basic_model.dart';
 import 'package:paybook_app/data/models/charge/charge_111_model.dart';
-import 'package:paybook_app/data/models/cobranca/cobranca_111_model.dart';
-import 'package:paybook_app/data/models/cobranca/cobranca_211_model.dart';
 import 'package:paybook_app/data/models/destinatario.dart';
 import 'package:paybook_app/data/models/payment_link_model.dart';
 import 'package:paybook_app/data/models/payment_link_preview_model.dart';
 import 'package:paybook_app/data/models/user_model.dart';
+import 'package:paybook_app/data/repository/timestamp_serializer_plugin.dart';
+import 'package:paybook_app/http/charge_dto.dart';
 import 'package:paybook_app/services/enum_cobranca_status.dart';
 import 'package:paybook_app/services/enum_link_status.dart';
-import 'package:paybook_app/services/enum_tipo_book.dart';
-import 'package:paybook_app/services/enum_tipo_cobranca.dart';
+import 'package:paybook_app/services/enum_book_type.dart';
+import 'package:paybook_app/services/enum_charge_type.dart';
 
 part 'serializers.g.dart';
 
@@ -28,18 +28,21 @@ part 'serializers.g.dart';
 
   //charges
   Charge111Model,
-  Cobranca111Model,
-  Cobranca211Model,
 
   //payment links
   PaymentLinkModel,
   PaymentLinkPreviewModel,
 
+  //dto
+  ChargeDto,
+
   //enums
   EnumCobrancaStatus,
-  EnumTipoBook,
-  EnumTipoCobranca,
+  EnumBookType,
+  EnumChargeType,
   EnumLinkStatus,
 ])
-final Serializers serializers =
-    (_$serializers.toBuilder()..addPlugin(new StandardJsonPlugin())).build();
+final Serializers serializers = (_$serializers.toBuilder()
+      ..addPlugin(new StandardJsonPlugin())
+      ..addPlugin(new TimestampSerializerPlugin()))
+    .build();

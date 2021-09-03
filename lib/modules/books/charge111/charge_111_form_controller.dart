@@ -6,13 +6,15 @@ import 'package:paybook_app/data/models/charge/charge_111_model.dart';
 import 'package:paybook_app/data/models/destinatario.dart';
 import 'package:paybook_app/globals/enum_form_action.dart';
 import 'package:paybook_app/routes/app_pages.dart';
-import 'package:paybook_app/services/cobranca_service.dart';
+import 'package:paybook_app/services/charge_service.dart';
+import 'package:paybook_app/services/enum_charge_type.dart';
 import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/utils/formatters.dart';
 import 'package:paybook_app/utils/id_generator.dart';
 
 class Charge111FormController extends GetxController {
   final log = Logger('Charge111FormController');
-  final ICobrancaService<Charge111Model> cobrancaService;
+  final IChargeService<Charge111Model> cobrancaService;
   final String bookID;
   final _formKey = GlobalKey<FormState>();
   final isInAsyncCall = false.obs;
@@ -21,7 +23,6 @@ class Charge111FormController extends GetxController {
   final vencimentoController = TextEditingController();
   final editorDiasVencimentoController = TextEditingController(text: '0');
 
-  final formatter = NumberFormat("#,##0.00", "pt_BR");
   final toggleVencimentos = [false, false, false].obs;
   final vencimentos = Map.of({7: Text("7"), 14: Text("14"), 30: Text("30")});
 
@@ -30,8 +31,8 @@ class Charge111FormController extends GetxController {
   // defines if is create or edit
   late EnumFormAction formAction;
 
-  Charge111Model? _charge111Model;
-  double? valor;
+  Charge111Model? _chargeToEdit;
+  int? valor;
   final destinatario = Rxn<Destinatario>();
   var dataVencimento = DateTime.now().obs;
   DateTime dpInitialDate = DateTime.now();
@@ -41,18 +42,18 @@ class Charge111FormController extends GetxController {
 
   Charge111FormController(
       {required this.cobrancaService, required this.bookID, Charge111Model? chargeToEdit})
-      : this._charge111Model = chargeToEdit {
-    this._charge111Model == null ? _initFormIncluir() : _initFormAlterar(this._charge111Model!);
+      : this._chargeToEdit = chargeToEdit {
+    this._chargeToEdit == null ? _initFormIncluir() : _initFormAlterar(this._chargeToEdit!);
   }
 
-  @override
-  onInit() {
-    super.onInit();
-    // this._charge111Model == null ? _initFormIncluir() : _initFormAlterar(this._charge111Model!);
-    // Get.parameters.containsKey('id_cobranca')
-    //     ? _initFormAlterar(Get.parameters['id_cobranca'])
-    //     : _initFormIncluir();
-  }
+  // @override
+  // onInit() {
+  //   super.onInit();
+  // this._charge111Model == null ? _initFormIncluir() : _initFormAlterar(this._charge111Model!);
+  // Get.parameters.containsKey('id_cobranca')
+  //     ? _initFormAlterar(Get.parameters['id_cobranca'])
+  //     : _initFormIncluir();
+  // }
 
   get formKey => this._formKey;
 
@@ -93,31 +94,24 @@ class Charge111FormController extends GetxController {
     }
   }
 
-  Future salvarCobranca() async {
-    var cobranca;
-    if (formAction == EnumFormAction.INCLUIR) {
-      Charge111Model((s) => s
-        ..id = newCobrancaId()
-        ..idBook = bookID
-        ..valor = this.valor
-        ..destinatario = this.destinatario.value!.toBuilder()
-        ..dtCriacao = DateTime.now()
-        ..dtVencimento = this.dataVencimento.value
-        ..status = EnumCobrancaStatus.waiting_payment);
-    } else if (formAction == EnumFormAction.ALTERAR) {
-      this._charge111Model!.rebuild((b) => b
-        ..valor = this.valor
-        ..destinatario = this.destinatario.value!.toBuilder()
-        ..dtVencimento = this.dataVencimento.value);
-      cobranca = this._charge111Model;
-    }
-    await save(cobranca);
+  Future incluirCobranca() async {
+    var charge111model = Charge111Model((s) => s
+      ..id = newCobrancaId()
+      ..chargeType = EnumChargeType.C_111
+      ..amount = this.valor
+      ..receiver = this.destinatario.value!.toBuilder()
+      ..creationDate = DateTime.now().toUtc()
+      ..expirationDate = this.dataVencimento.value.toUtc()
+      ..status = EnumCobrancaStatus.charge_open);
+    await cobrancaService.create(charge111model);
   }
 
-  Future save(Charge111Model model) async {
-    this.isInAsyncCall.value = true;
-    await cobrancaService.save(model);
-    this.isInAsyncCall.value = false;
+  Future alterarCobranca() async {
+    var rebuild = this._chargeToEdit!.rebuild((b) => b
+      ..amount = this.valor
+      ..receiver = this.destinatario.value!.toBuilder()
+      ..expirationDate = this.dataVencimento.value);
+    await cobrancaService.update(rebuild);
   }
 
   void delete(Charge111Model model) {
@@ -132,8 +126,7 @@ class Charge111FormController extends GetxController {
     formAction = EnumFormAction.INCLUIR;
     this.tituloForm = 'nova cobrança simples';
     changeToggleVencimento(0);
-    final formatter = NumberFormat("#,##0.00", "pt_BR");
-    this.valorController.text = "R\$ " + formatter.format(0);
+    this.valorController.text = "R\$ " + Formatters.currencyPtBr(0);
   }
 
   _initFormAlterar(Charge111Model cobrancaModel) {
@@ -144,16 +137,12 @@ class Charge111FormController extends GetxController {
         this.editorDiasVencimentoController.text =
             novaData.difference(dataVencimentoOriginal!).inDays.toString();
     });
-    // cobrancaService.findById(idCobranca).then((cobrancaModel) {
-    //   if (cobrancaModel != null) {
-    //     this._charge111Model = cobrancaModel;
 
-    final formatter = NumberFormat("#,##0.00", "pt_BR");
-    this.valorController.text = "R\$ " + formatter.format(cobrancaModel.valor);
-    this.destinatario.value = cobrancaModel.destinatario;
-    this.dataVencimento.value = cobrancaModel.dtVencimento;
-    this.dataVencimentoOriginal = cobrancaModel.dtVencimento;
-    this.dpInitialDate = cobrancaModel.dtVencimento;
+    this.valorController.text = "R\$ " + Formatters.currencyPtBr(cobrancaModel.amount);
+    this.destinatario.value = cobrancaModel.receiver;
+    this.dataVencimento.value = cobrancaModel.expirationDate;
+    this.dataVencimentoOriginal = cobrancaModel.expirationDate;
+    this.dpInitialDate = cobrancaModel.expirationDate;
     //   } else
     //     log.warning('_initFormAlterar: no charge was found for $idCobranca');
     // }).whenComplete(() => this.isInAsyncCall.value = false);

@@ -27,15 +27,6 @@ abstract class AppRoutes {
 
   /// pagina que permite selecionar o tipo de book a ser criado
   static const NOVO_BOOK = '/novo_book';
-
-  /// pagina para criacao de um novo book simples
-  static const BOOK_SIMPLES_FORM = '/book_simples_form';
-
-  /// pagina que mostra o conteudo do book
-// static const BOOK_SIMPLES_LIST = '/book_simples_list';
-
-  /// form para criacao de uma nova cobranca simples
-// static const COBRANCA_SIMPLES_FORM = '/cobranca_simples';
 }
 
 /// Books routes
@@ -49,7 +40,7 @@ class _Books {
   String get parameterBookId => _parameter_book_id;
 
   /// builds a route to open the informed book on home screen
-  String homeBookURLBuild({required EnumTipoBook tipoBook, required String bookID}) {
+  String homeBookURLBuild({required EnumBookType tipoBook, required String bookID}) {
     return '/home/book/${tipoBook.wireNumber}/$bookID';
   }
 
@@ -58,6 +49,35 @@ class _Books {
 
   /// URL template for book 201 to show on home screen
   final homeBook201URLTemplate = '/home/book/201/:$_parameter_book_id';
+
+  /// Build URL route for create or edit a book.
+  /// For edit, set ``bookId`` parameter. If available, pass the object model as ``Get.arguments``.
+  ///
+  /// example
+  /// ```
+  /// To edit book 5478e5e4:
+  /// Get.to(AppRoutes.Books.bookFormURLBuild(
+  ///         tipoBook: EnumTipoBook.B_101,
+  ///         chargeId: '5478e5e4'));
+  ///
+  /// To create a new book:
+  /// Get.to(AppRoutes.Books.bookFormURLBuild(tipoBook: EnumTipoBook.B_101));
+  /// ```
+  String bookFormURLBuild({required EnumBookType tipoBook, String bookId = ''}) {
+    return '/books/${tipoBook.wireNumber}/$bookId';
+  }
+
+  /// route for new book 101: ``/books/101/``
+  final newBook101FormURLTemplate = '/books/101/';
+
+  /// route for edit book 101: ``/books/101/:book_id``
+  final editBook101FormURLTemplate = '/books/101/:${_Books._parameter_book_id}';
+
+  /// route for new book 201: ``/books/201/``
+  final newBook201FormURLTemplate = '/books/201/';
+
+  /// route for edit book 201: ``/books/201/:book_id``
+  final editBook201FormURLTemplate = '/books/201/:${_Books._parameter_book_id}';
 }
 
 class _Charges {
@@ -68,7 +88,7 @@ class _Charges {
   String get parameterChargeId => _parameter_charge_id;
 
   /// Build URL route for create or edit a charge.
-  /// For edit, set ``chargeId`` parameter. If avaliabre, can pass the object model.
+  /// For edit, set ``chargeId`` parameter. If available, can pass the object model.
   ///
   /// example
   /// ```
@@ -84,20 +104,19 @@ class _Charges {
   ///         tipoCobranca: EnumTipoCobranca.C_111));
   /// ```
   String chargeFormURLBuild(
-      {required EnumTipoBook tipoBook,
-      required EnumTipoCobranca tipoCobranca,
+      {required EnumBookType tipoBook,
+      required EnumChargeType tipoCobranca,
       required String bookId,
       String chargeId = ''}) {
-    // return '/charge/${tipoBook.wireNumber}/${tipoCobranca.wireNumber}/' +
-    //     (chargeId != null ? '$chargeId' : '');
-    return '/charge/${tipoBook.wireNumber}/$bookId/${tipoCobranca.wireNumber}/$chargeId';
+    return '/charges/${tipoBook.wireNumber}/$bookId/${tipoCobranca.wireNumber}/$chargeId';
   }
 
-  /// URL template for route: ``/charge/101/:book_id/111/``
-  final newCharge111FormURLTemplate = '/charge/101/:book_id/111/';
+  /// route for new charge: ``/charges/101/:book_id/111/``
+  final newCharge111FormURLTemplate = '/charges/101/:${_Books._parameter_book_id}/111/';
 
-  /// URL template for route: ``/charge/101/:book_id/111/:charge_id``
-  final editCharge111FormURLTemplate = '/charge/101/:book_id/111/:${_Charges._parameter_charge_id}';
+  /// route for edit charge: ``/charges/101/:book_id/111/:charge_id``
+  final editCharge111FormURLTemplate =
+      '/charges/101/:${_Books._parameter_book_id}/111/:${_Charges._parameter_charge_id}';
 }
 
 class _PaymentLinks {

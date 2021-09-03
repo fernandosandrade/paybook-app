@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 class Formatters {
   /// retorna uma valor na forma monetaria:
   ///
-  /// 1234.56 => 1.234,56
-  static String currencyPtBr(double valor) {
+  /// 123456 => 1.234,56
+  static String currencyPtBr(int valor) {
     final formatter = new NumberFormat("#,##0.00", "pt_BR");
-    return formatter.format(valor);
+    return formatter.format(valor / 100);
   }
 
   /// retorna a data em dd/MM/yyyy

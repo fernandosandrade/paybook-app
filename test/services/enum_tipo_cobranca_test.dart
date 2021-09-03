@@ -1,18 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paybook_app/globals/serializers.dart';
-import 'package:paybook_app/services/enum_tipo_cobranca.dart';
+import 'package:paybook_app/services/enum_charge_type.dart';
 
 void main() {
   test('enum from codigo cobranca', () {
-    String wireNumber = EnumTipoCobranca.C_112.wireNumber;
-    var valueOfFromCodigo = EnumTipoCobranca.valueOf("C_111");
-    expect(valueOfFromCodigo, EnumTipoCobranca.C_111);
+    String wireNumber = EnumChargeType.C_112.wireNumber;
+    var valueOfFromCodigo = EnumChargeType.valueOf("C_111");
+    expect(valueOfFromCodigo, EnumChargeType.C_111);
   });
   test('get codCobranca', () {
-    expect("111", EnumTipoCobranca.C_111);
+    expect("111", EnumChargeType.C_111);
   });
   test('serialize codCobranca', () {
-    print(serializers.toJson(EnumTipoCobranca.serializer, EnumTipoCobranca.C_111));
-    expect("111", EnumTipoCobranca.C_111);
+    print(serializers.toJson(EnumChargeType.serializer, EnumChargeType.C_111));
+    expect("111", EnumChargeType.C_111);
   });
 }

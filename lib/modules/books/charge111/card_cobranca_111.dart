@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paybook_app/data/models/charge/charge_111_model.dart';
 import 'package:paybook_app/routes/app_pages.dart';
-import 'package:paybook_app/services/enum_tipo_book.dart';
-import 'package:paybook_app/services/enum_tipo_cobranca.dart';
+import 'package:paybook_app/services/enum_book_type.dart';
+import 'package:paybook_app/services/enum_charge_type.dart';
 import 'package:paybook_app/themes/app_text_style.dart';
 import 'package:paybook_app/themes/default_icons.dart';
 import 'package:paybook_app/utils/formatters.dart';
@@ -16,9 +16,9 @@ class CardCobranca111 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var nomeDestinatario = charge111Model.destinatario.nome;
-    var valor = 'R\$ ${Formatters.currencyPtBr(charge111Model.valor)}';
-    var vencimento = Formatters.simpleDate(charge111Model.dtVencimento);
+    var nomeDestinatario = charge111Model.receiver.nome;
+    var valor = 'R\$ ${Formatters.currencyPtBr(charge111Model.amount)}';
+    var vencimento = Formatters.simpleDate(charge111Model.expirationDate);
     //return cartao();
     return Card(
         elevation: 2,
@@ -44,8 +44,8 @@ class CardCobranca111 extends StatelessWidget {
           ),
           onTap: () => Get.toNamed(
               AppRoutes.Charges.chargeFormURLBuild(
-                  tipoBook: EnumTipoBook.B_101,
-                  tipoCobranca: EnumTipoCobranca.C_111,
+                  tipoBook: EnumBookType.B_101,
+                  tipoCobranca: EnumChargeType.C_111,
                   bookId: bookId,
                   chargeId: charge111Model.id),
               arguments: charge111Model),
@@ -53,9 +53,9 @@ class CardCobranca111 extends StatelessWidget {
   }
 
   Widget cartao() {
-    var nomeDestinatario = charge111Model.destinatario.nome;
-    var valor = 'R\$ ${Formatters.currencyPtBr(charge111Model.valor)}';
-    var vencimento = Formatters.simpleDate(charge111Model.dtVencimento);
+    var nomeDestinatario = charge111Model.receiver.nome;
+    var valor = 'R\$ ${Formatters.currencyPtBr(charge111Model.amount)}';
+    var vencimento = Formatters.simpleDate(charge111Model.expirationDate);
     return Center(
       child: Card(
         elevation: 2,

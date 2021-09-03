@@ -10,7 +10,6 @@ class DestinatarioController extends GetxController {
   final log = Logger('DestinatarioController');
   final _formKey = GlobalKey<FormState>();
 
-  //final phoneMask = MaskTextInputFormatter(mask: '###-###-###', filter: {'#': RegExp(r'[0-9]')});
   final phoneMask = PhoneNumberInputFormatter();
   Destinatario? destinatario;
 
@@ -48,9 +47,6 @@ class DestinatarioController extends GetxController {
         ..nome = nomeController.text
         ..email = emailController.text
         ..telefone = telefoneController.text);
-      // this.destinatario.nome = nomeController.text;
-      // this.destinatario.telefone = telefoneController.text;
-      // this.destinatario.email = emailController.text;
       Get.back(result: this.destinatario);
     } else {
       log.warning('invalid form');

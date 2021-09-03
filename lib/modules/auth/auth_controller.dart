@@ -31,7 +31,8 @@ class AuthController extends GetxController {
 
   /// Evaluates every user change to deal with signin and signout
   void _userChangeHandle() {
-    ever(_firebaseUser, (firebaseUser) => firebaseUser == null ? _handleNotLogged() : _handleLoggedIn(),
+    ever(_firebaseUser,
+        (firebaseUser) => firebaseUser == null ? _handleNotLogged() : _handleLoggedIn(),
         onError: () => log.severe('error while listening firebaseUser'));
   }
 
@@ -42,9 +43,15 @@ class AuthController extends GetxController {
   }
 
   void _handleLoggedIn() {
-    status.value = EnumAuthStatus.LOGGED_IN;
-    log.info('user status [${status.value}]');
-    Get.offAllNamed(AppRoutes.HOME);
+    // var refreshToken = _firebaseUser.value!.refreshToken;
+    _firebaseUser.value!.getIdToken().then((value) {
+      status.value = EnumAuthStatus.LOGGED_IN;
+      log.info('user status [${status.value}] uid=${_firebaseUser.value!.uid}');
+      Get.offAllNamed(AppRoutes.HOME);
+    }).catchError((ex) {
+      print('$ex');
+      signOut();
+    });
   }
 
   User get user => _firebaseUser.value!;
@@ -62,7 +69,8 @@ class AuthController extends GetxController {
 
   Future loginWithEmailPassword({required String email, required String password}) async {
     try {
-      User user = await authService.signInWithEmailPassword(email: email.trim(), password: password);
+      User user =
+          await authService.signInWithEmailPassword(email: email.trim(), password: password);
     } catch (e) {
       Get.snackbar(
         "Error signing in",
@@ -76,7 +84,7 @@ class AuthController extends GetxController {
     try {
       await authService.logout();
       //Get.find<UserController>().clear();
-      Get.offAllNamed(AppRoutes.INITIAL);
+      // Get.offAllNamed(AppRoutes.INITIAL);
     } catch (e) {
       Get.snackbar(
         "Error signing out",

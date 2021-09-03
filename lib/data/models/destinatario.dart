@@ -15,11 +15,17 @@ abstract class Destinatario extends Object implements Built<Destinatario, Destin
   String get email;
   String get telefone;
 
-  String toJson() {
-    return json.encode(serializers.serializeWith(Destinatario.serializer, this));
+  Map<String, dynamic> toMap() {
+    var serialized =
+        serializers.serializeWith(Destinatario.serializer, this) as Map<String, dynamic>;
+    return Map<String, dynamic>.from(serialized);
   }
 
-  static Destinatario? fromJson(String jsonString) {
-    return serializers.deserializeWith(Destinatario.serializer, json.decode(jsonString));
-  }
+  // String toJson() {
+  //   return json.encode(serializers.serializeWith(Destinatario.serializer, this));
+  // }
+  //
+  // static Destinatario? fromJson(String jsonString) {
+  //   return serializers.deserializeWith(Destinatario.serializer, json.decode(jsonString));
+  // }
 }

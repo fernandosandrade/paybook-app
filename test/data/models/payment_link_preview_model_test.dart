@@ -10,7 +10,7 @@ void main() {
     var previewModel = PaymentLinkPreviewModel((s) => s
       ..id = 'id_teste'
       ..status = EnumLinkStatus.waiting_paiment
-      ..valor = 100.00
+      ..valor = 100
       ..vencimento = DateTime.now().toUtc());
     var map = previewModel.toMap();
     var fromJson = serializers.fromJson(PaymentLinkPreviewModel.serializer, json.encode(map));

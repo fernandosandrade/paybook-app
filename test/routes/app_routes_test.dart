@@ -1,21 +1,45 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paybook_app/routes/app_pages.dart';
-import 'package:paybook_app/services/enum_tipo_book.dart';
-import 'package:paybook_app/services/enum_tipo_cobranca.dart';
+import 'package:paybook_app/services/enum_book_type.dart';
+import 'package:paybook_app/services/enum_charge_type.dart';
 
 void main() {
   test('dynamic route test', () {
-    print(AppRoutes.Books.homeBook101URLTemplate);
-    print(AppRoutes.Books.homeBookURLBuild(tipoBook: EnumTipoBook.B_101, bookID: '123456'));
-    print(AppRoutes.Charges.newCharge111FormURLTemplate);
-    print(AppRoutes.Charges.chargeFormURLBuild(
-        tipoBook: EnumTipoBook.B_101, tipoCobranca: EnumTipoCobranca.C_111, bookId: '4152'));
-    print(AppRoutes.Charges.chargeFormURLBuild(
-        tipoBook: EnumTipoBook.B_101,
-        tipoCobranca: EnumTipoCobranca.C_111,
-        bookId: '4152',
-        chargeId: ''
-            '5478e5e4'
-            ''));
+    expect(AppRoutes.Books.homeBook101URLTemplate, '/home/book/101/:book_id');
+
+    expect(
+        AppRoutes.Books.homeBookURLBuild(
+            tipoBook: EnumBookType.B_101, bookID: '50zjPKx82aiAgjxzTKbY'),
+        '/home/book/101/50zjPKx82aiAgjxzTKbY');
+
+    expect(AppRoutes.Charges.newCharge111FormURLTemplate, '/charge/101/:book_id/111/');
+
+    expect(AppRoutes.Charges.editCharge111FormURLTemplate, '/charge/101/:book_id/111/:charge_id');
+
+    expect(
+        AppRoutes.Charges.chargeFormURLBuild(
+            tipoBook: EnumBookType.B_101,
+            tipoCobranca: EnumChargeType.C_111,
+            bookId: '50zjPKx82aiAgjxzTKbY'),
+        '/charge/101/50zjPKx82aiAgjxzTKbY/111/');
+
+    expect(
+        AppRoutes.Charges.chargeFormURLBuild(
+            tipoBook: EnumBookType.B_101,
+            tipoCobranca: EnumChargeType.C_111,
+            bookId: '50zjPKx82aiAgjxzTKbY',
+            chargeId: 'JE4RTA1UbozO4r6fIkMU'),
+        '/charge/101/50zjPKx82aiAgjxzTKbY/111/JE4RTA1UbozO4r6fIkMU');
+
+    expect(AppRoutes.Books.bookFormURLBuild(tipoBook: EnumBookType.B_101), '/book/101/');
+
+    expect(
+        AppRoutes.Books.bookFormURLBuild(
+            tipoBook: EnumBookType.B_101, bookId: '50zjPKx82aiAgjxzTKbY'),
+        '/book/101/50zjPKx82aiAgjxzTKbY');
+
+    expect(AppRoutes.Books.editBook101FormURLTemplate, '/book/101/:book_id');
+
+    expect(AppRoutes.Books.newBook101FormURLTemplate, '/book/101/');
   });
 }

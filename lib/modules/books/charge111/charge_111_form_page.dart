@@ -71,7 +71,7 @@ class Charge111FormPage extends GetView<Charge111FormController> {
             //         100),
             onSaved: (val) {
               if (val != null)
-                controller.valor = double.parse(val.replaceAll(new RegExp('[^0-9]'), "")) / 100;
+                controller.valor = int.parse(val.replaceAll(new RegExp('[^0-9]'), ""));
             },
           ),
         )
@@ -224,14 +224,6 @@ class Charge111FormPage extends GetView<Charge111FormController> {
       return botaoAlterarCobranca();
     } else
       throw Exception('nao foi possivel identificar a acao do form');
-    // return GetX<Charge111FormController>(builder: (_) {
-    //   if (_.formAction.value == EnumFormAction.INCLUIR) {
-    //     return botaoIncluirCobranca();
-    //   } else if (_.formAction.value == EnumFormAction.ALTERAR) {
-    //     return botaoAlterarCobranca();
-    //   } else
-    //     throw Exception('nao foi possivel identificar a acao do form');
-    // });
   }
 
   botaoIncluirCobranca() {
@@ -244,26 +236,34 @@ class Charge111FormPage extends GetView<Charge111FormController> {
 
   void _incluirCobranca() {
     controller.formKey.currentState.save();
-    controller.salvarCobranca().then((value) => Get.dialog(AlertDialog(
-          title: Text('cobrança registrada!'),
-          content: Text('sua nova cobrança foi registrada com sucesso'),
-          actions: [TextButton(onPressed: () => Get.back(), child: Text('ok'))],
-        )).then((value) => Get.back()));
+    controller.isInAsyncCall.value = true;
+    controller.incluirCobranca().then((value) {
+      controller.isInAsyncCall.value = false;
+      return Get.dialog(AlertDialog(
+        title: Text('cobrança registrada!'),
+        content: Text('sua nova cobrança foi registrada com sucesso'),
+        actions: [TextButton(onPressed: () => Get.back(), child: Text('ok'))],
+      )).then((value) => Get.back());
+    });
   }
 
   void _alterarCobranca() {
     controller.formKey.currentState.save();
-    controller.salvarCobranca().then((value) => Get.dialog(AlertDialog(
-          title: Text('cobrança alterada!'),
-          content: Text('sua cobrança foi alterada com sucesso'),
-          actions: [TextButton(onPressed: () => Get.back(), child: Text('ok'))],
-        )).then((value) => Get.back()));
+    controller.isInAsyncCall.value = true;
+    controller.alterarCobranca().then((value) {
+      controller.isInAsyncCall.value = false;
+      return Get.dialog(AlertDialog(
+        title: Text('cobrança alterada!'),
+        content: Text('sua cobrança foi alterada com sucesso'),
+        actions: [TextButton(onPressed: () => Get.back(), child: Text('ok'))],
+      )).then((value) => Get.back());
+    });
   }
 
   Future _datePicker() async {
     DateTime? picked = await showDatePicker(
         context: Get.context!,
-        initialDate: Get.find<Charge111FormController>().dpInitialDate!,
+        initialDate: controller.dpInitialDate!,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)));
     if (picked != null) {

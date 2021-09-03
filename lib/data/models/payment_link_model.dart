@@ -21,10 +21,10 @@ abstract class PaymentLinkModel extends Object
   String get url;
 
   @BuiltValueField(wireName: "valor_principal")
-  double get valorPrincipal;
+  int get valorPrincipal;
 
   @BuiltValueField(wireName: "valor_taxas")
-  double get valorTaxas;
+  int get valorTaxas;
 
   EnumLinkStatus get status;
 
@@ -33,7 +33,8 @@ abstract class PaymentLinkModel extends Object
   static Serializer<PaymentLinkModel> get serializer => _$paymentLinkModelSerializer;
 
   Map<String, dynamic> toMap() {
-    var serialized = serializers.serializeWith(PaymentLinkModel.serializer, this) as Map<String, dynamic>;
+    var serialized =
+        serializers.serializeWith(PaymentLinkModel.serializer, this) as Map<String, dynamic>;
     return Map<String, dynamic>.from(serialized);
   }
 }

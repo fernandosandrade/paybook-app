@@ -67,7 +67,7 @@ class DestinatarioPage extends GetView<DestinatarioController> {
       decoration: InputDecoration(
         icon: Icon(DefaultIcons.PHONE_1),
         labelText: "telefone",
-        //hintText: '(51) 123-456-789',
+        hintText: '(00) 123-456-789',
       ),
       enableSuggestions: true,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],

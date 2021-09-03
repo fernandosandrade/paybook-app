@@ -13,8 +13,13 @@ abstract class IAuthService {
 }
 
 class AuthService implements IAuthService {
+  static const String HOST = 'http://10.0.2.2:9099';
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  AuthService() {
+    FirebaseAuth.instance.useEmulator(HOST);
+  }
 
   @override
   Future<User> signInWithGoogle() async {

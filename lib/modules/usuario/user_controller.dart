@@ -21,9 +21,10 @@ class UserController extends GetxController {
   UserController({required AuthController authController, required IUserService userService}) {
     this._authController = authController;
     this._userService = userService;
+    _init();
   }
 
-  onInit() {
+  _init() {
     // internal loggin and logout treatment
     // deal with AuthController._userChangeHandle() changes
     ever(_authController.status,
@@ -42,16 +43,40 @@ class UserController extends GetxController {
   void _handleLoggedIn() {
     var newUser = _authController.user;
     log.info('logged in user [${newUser.email}]');
-    _userService.getUser(email: newUser.email!).then((repoUser) => repoUser != null
-        ? user = repoUser
-        : _userService
+    _userService.getUser(email: newUser.email!).then((repoUser) {
+      if (repoUser != null) {
+        user = repoUser;
+      } else {
+        log.info('creating new user [${newUser.email}]');
+        _userService
             .save(UserModel(
-              (s) => s
-                ..id = newUser.uid
-                ..email = newUser.email
-                ..nome = newUser.displayName!.split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
-            ))
-            .then((savedUser) => user = savedUser));
+          (s) => s
+            ..id = newUser.uid
+            ..email = newUser.email
+            ..nome = newUser.displayName!
+                .split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
+        ))
+            .then((savedUser) {
+          log.info('user created. email=${newUser.email} uid=${newUser.uid}');
+          user = savedUser;
+        }).catchError((error) {
+          print('$error');
+        });
+      }
+    }).catchError((ex) {
+      log.severe(ex);
+    });
+
+    // then((repoUser) => repoUser != null
+    //     ? user = repoUser
+    //     : _userService
+    //         .save(UserModel(
+    //           (s) => s
+    //             ..id = newUser.uid
+    //             ..email = newUser.email
+    //             ..nome = newUser.displayName!.split(' ')[0], // caso nome + sobrenome estejam juntos, pego apenas o nome
+    //         ))
+    //         .then((savedUser) => user = savedUser));
   }
 
   void _handleLoggedOut() {

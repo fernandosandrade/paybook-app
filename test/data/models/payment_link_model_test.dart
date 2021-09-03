@@ -14,7 +14,7 @@ void main() {
         ..id = 'id_teste'
         ..vencimento = DateTime.now().toUtc()
         ..status = EnumLinkStatus.waiting_paiment
-        ..valor = 100.00)
+        ..valor = 1000)
     ].build();
 
     var paymentLinkModel = PaymentLinkModel((s) => s
@@ -23,8 +23,8 @@ void main() {
       ..idCobranca = 'cobranca123'
       ..status = EnumLinkStatus.waiting_paiment
       ..url = 'https://teste'
-      ..valorPrincipal = 100.00
-      ..valorTaxas = 10.00
+      ..valorPrincipal = 10000
+      ..valorTaxas = 1000
       ..vencimento = DateTime.now().toUtc());
     // ..linksPagamento = build.toBuilder()
     var map = paymentLinkModel.toMap();

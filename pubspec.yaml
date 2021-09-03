@@ -25,41 +25,41 @@ dependencies:
     sdk: flutter
     
    # getx
-  get:
-  dio:
+  get: ^4.3.8
 
     # firestore
-  firebase_core: ^1.2.0
-  firebase_auth: ^1.2.0
-  cloud_firestore: ^2.2.0
-  google_sign_in: ^5.0.2
+  firebase_core: ^1.6.0
+  firebase_auth: ^3.1.0
+  cloud_firestore: ^2.5.1
+  google_sign_in: ^5.0.7
 
     # diversos
 #  json_annotation: ^3.0.1
   intl: ^0.17.0
   fluttericon: ^2.0.0
-  mask_text_input_formatter: ^2.0.0-nullsafety.2
-  random_string: ^2.2.0-nullsafety
+  mask_text_input_formatter: ^2.0.0
+  random_string: ^2.3.1
   modal_progress_hud_nsn: ^0.1.0-nullsafety-1
   shared_preferences: ^2.0.5
   auto_size_text_field: ^1.0.0-nullsafety.1
   contacts_service: ^0.6.1
   permission_handler: ^8.0.0+2
-  built_value: ^8.0.5
-  built_collection: ^5.0.0
-  memoize:
-  test: ^1.16.5
+  built_value: ^8.1.2
+  built_collection: ^5.1.0
+  test:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   logging: ^1.0.1
+  http: ^0.13.3
+  sprintf: ^6.0.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.0.2
+  build_runner: ^2.1.1
   built_value_generator:
 
 # For information on the generic Dart part of this file, see the

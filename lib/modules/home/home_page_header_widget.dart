@@ -2,23 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:paybook_app/data/models/book/book_base_model.dart';
+import 'package:paybook_app/data/models/book/abstract_book_base_model.dart';
 import 'package:paybook_app/routes/app_pages.dart';
+import 'package:paybook_app/services/enum_book_type.dart';
 import 'package:paybook_app/themes/default_icons.dart';
+import 'package:paybook_app/utils/formatters.dart';
 
 import 'home_controller.dart';
 
+enum _BookMenuOptions { edit, delete }
+
 class HomePageHeaderWidget extends StatelessWidget {
   final String bookID;
+
+  final EnumBookType tipoBook;
 
   final String nomeBook;
 
   final int totalCobrancas;
 
-  final double valorTotal;
+  final int valorTotal;
+
+  final Function editBook;
+
+  final Function deleteBook;
 
   HomePageHeaderWidget(
-      {required this.bookID, required this.nomeBook, required this.totalCobrancas, required this.valorTotal});
+      {required this.bookID,
+      required this.tipoBook,
+      required this.nomeBook,
+      required this.totalCobrancas,
+      required this.valorTotal,
+      required this.editBook,
+      required this.deleteBook});
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +53,24 @@ class HomePageHeaderWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text('$nomeBook'),
-        IconButton(
-            icon: Icon(
-              DefaultIcons.EDIT_1,
-              color: Colors.white,
+        PopupMenuButton(
+          itemBuilder: (_) => [
+            const PopupMenuItem(
+              value: _BookMenuOptions.edit,
+              child: Text('editar'),
             ),
-            onPressed: () => _editarBook())
+            const PopupMenuItem(
+              value: _BookMenuOptions.delete,
+              child: Text('excluir'),
+            ),
+          ],
+          onSelected: (_BookMenuOptions option) => _popupMenuActions(option),
+        ),
       ],
     );
   }
 
   Widget _appBarHeader() {
-    final formatter = new NumberFormat("#,##0.00", "pt_BR");
     return Container(
       margin: EdgeInsets.only(bottom: 20),
       child: Column(
@@ -56,14 +78,22 @@ class HomePageHeaderWidget extends StatelessWidget {
         children: <Widget>[
           Text('$totalCobrancas cobranças', style: TextStyle(color: Colors.white, fontSize: 20)),
           SizedBox(height: 10),
-          Text('R\$ ${formatter.format(valorTotal)}', style: TextStyle(color: Colors.white, fontSize: 20)),
+          Text('R\$ ${Formatters.currencyPtBr(valorTotal)}',
+              style: TextStyle(color: Colors.white, fontSize: 20)),
         ],
       ),
     );
   }
 
-  void _editarBook() {
-    Get.toNamed(AppRoutes.BOOK_SIMPLES_FORM + '?id_book=' + this.bookID)!
-        .then((_) => Get.find<HomeController>().reloadBook(this.bookID));
+  _popupMenuActions(_BookMenuOptions? option) {
+    switch (option) {
+      case _BookMenuOptions.edit:
+        editBook();
+        break;
+      case _BookMenuOptions.delete:
+        deleteBook();
+        break;
+      default:
+    }
   }
 }
