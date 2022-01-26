@@ -8,13 +8,13 @@ import 'package:paybook_app/globals/enum_form_action.dart';
 import 'package:paybook_app/routes/app_pages.dart';
 import 'package:paybook_app/services/charge_service.dart';
 import 'package:paybook_app/services/enum_charge_type.dart';
-import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/services/enum_charge_status.dart';
 import 'package:paybook_app/utils/formatters.dart';
-import 'package:paybook_app/utils/id_generator.dart';
+import 'package:paybook_app/utils/id_provider.dart';
 
 class Charge111FormController extends GetxController {
   final log = Logger('Charge111FormController');
-  final IChargeService<Charge111Model> cobrancaService;
+  final IChargeService<Charge111Model> chargeService;
   final String bookID;
   final _formKey = GlobalKey<FormState>();
   final isInAsyncCall = false.obs;
@@ -41,7 +41,7 @@ class Charge111FormController extends GetxController {
   DateTime? dataVencimentoOriginal;
 
   Charge111FormController(
-      {required this.cobrancaService, required this.bookID, Charge111Model? chargeToEdit})
+      {required this.chargeService, required this.bookID, Charge111Model? chargeToEdit})
       : this._chargeToEdit = chargeToEdit {
     this._chargeToEdit == null ? _initFormIncluir() : _initFormAlterar(this._chargeToEdit!);
   }
@@ -102,8 +102,8 @@ class Charge111FormController extends GetxController {
       ..receiver = this.destinatario.value!.toBuilder()
       ..creationDate = DateTime.now().toUtc()
       ..expirationDate = this.dataVencimento.value.toUtc()
-      ..status = EnumCobrancaStatus.charge_open);
-    await cobrancaService.create(charge111model);
+      ..status = EnumChargeStatus.charge_open);
+    await chargeService.create(charge111model);
   }
 
   Future alterarCobranca() async {
@@ -111,15 +111,15 @@ class Charge111FormController extends GetxController {
       ..amount = this.valor
       ..receiver = this.destinatario.value!.toBuilder()
       ..expirationDate = this.dataVencimento.value);
-    await cobrancaService.update(rebuild);
+    await chargeService.update(rebuild);
   }
 
   void delete(Charge111Model model) {
-    cobrancaService.delete(model);
+    chargeService.delete(model);
   }
 
   String newCobrancaId() {
-    return IdGenerator.randomAlphanumeric();
+    return IdProvider.newId();
   }
 
   _initFormIncluir() {

@@ -9,9 +9,9 @@ import 'package:paybook_app/routes/app_pages.dart';
 import 'package:paybook_app/services/book_service.dart';
 import 'package:paybook_app/services/charge_service.dart';
 
-import 'book_101_controller.dart';
+import 'book_101_home_controller.dart';
 
-class Book101Bindings implements Bindings {
+class Book101HomeBindings implements Bindings {
   @override
   void dependencies() {
     var bookId = Preconditions.checkNotNull(
@@ -27,7 +27,7 @@ class Book101Bindings implements Bindings {
 
     // insert controller
     Get.put(
-        Book101Controller(
+        Book101HomeController(
             cobrancaService: cobrancaService,
             bookId: bookId,
             bookService:

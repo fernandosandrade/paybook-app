@@ -46,7 +46,7 @@ class DestinatarioPage extends GetView<DestinatarioController> {
       controller: controller.nomeController,
       keyboardType: TextInputType.name,
       // onSaved: (value) => nome = value,
-      decoration: InputDecoration(icon: Icon(DefaultIcons.USER_1), labelText: 'nome'),
+      decoration: InputDecoration(icon: Icon(DefaultIcons.user_1), labelText: 'nome'),
       enableSuggestions: true,
       //maxLength: 32,
       //style: TextStyle(fontSize: 20),

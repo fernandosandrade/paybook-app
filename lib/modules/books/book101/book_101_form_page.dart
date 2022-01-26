@@ -12,7 +12,7 @@ class Book101FormPage extends GetView<Book101FormController> {
       return Scaffold(
         appBar: CustomWidget.appbar(titulo: controller.tituloForm),
         body: ModalProgressHUD(
-          child: _form(),
+          child: FormWidget(),
           inAsyncCall: controller.isInAsyncCall.value,
           opacity: 0.5,
           progressIndicator: CircularProgressIndicator(),
@@ -21,7 +21,39 @@ class Book101FormPage extends GetView<Book101FormController> {
     });
   }
 
-  Widget _form() {
+  // Widget _form() {
+  //   return Container(
+  //       margin: EdgeInsets.all(20.0),
+  //       child: Form(
+  //           key: controller.formKey,
+  //           child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: <Widget>[
+  //                 TextFormField(
+  //                   controller: controller.nomeBookTextController,
+  //                   decoration: InputDecoration(labelText: 'nome da lista'),
+  //                 ),
+  //                 ElevatedButton(
+  //                     child: Text(controller.nomeBotao),
+  //                     onPressed: () =>
+  //                         controller.salvarBook().then((msgRetorno) => Get.dialog(AlertDialog(
+  //                               title: Text('sucesso'),
+  //                               content: Text(msgRetorno),
+  //                               actions: [
+  //                                 TextButton(
+  //                                     onPressed: () => Get.back<String>(
+  //                                         result: controller.bookModel!.id, closeOverlays: true),
+  //                                     child: Text('ok'))
+  //                               ],
+  //                             ))))
+  //               ])));
+  // }
+}
+
+class FormWidget extends GetView<Book101FormController> {
+  @override
+  Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.all(20.0),
         child: Form(

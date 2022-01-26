@@ -5,7 +5,7 @@ import 'package:paybook_app/data/models/charge/charge_111_model.dart';
 import 'package:paybook_app/services/book_service.dart';
 import 'package:paybook_app/services/charge_service.dart';
 
-class Book101Controller extends GetxController {
+class Book101HomeController extends GetxController {
   final log = Logger('Book101Controller');
 
   final String bookId;
@@ -20,7 +20,7 @@ class Book101Controller extends GetxController {
 
   final ChargeService<Charge111Model> cobrancaService;
 
-  Book101Controller(
+  Book101HomeController(
       {required this.cobrancaService, required this.bookId, required this.bookService});
 
   // : this.cobrancaService = CobrancaService(

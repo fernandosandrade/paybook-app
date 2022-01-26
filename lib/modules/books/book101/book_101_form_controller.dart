@@ -5,7 +5,7 @@ import 'package:paybook_app/globals/enum_form_action.dart';
 import 'package:paybook_app/modules/usuario/user_controller.dart';
 import 'package:paybook_app/services/book_service.dart';
 import 'package:paybook_app/services/enum_book_type.dart';
-import 'package:paybook_app/utils/id_generator.dart';
+import 'package:paybook_app/utils/id_provider.dart';
 
 class Book101FormController extends GetxController {
   final IBookService<Book101Model> bookService;
@@ -52,7 +52,7 @@ class Book101FormController extends GetxController {
 
   String _include() {
     var book101Model = Book101Model((s) => s
-      ..id = IdGenerator.randomAlphanumeric()
+      ..id = IdProvider.newId()
       ..name = _nomeBookTextController.value.text
       ..bookType = EnumBookType.B_101
       ..active = true

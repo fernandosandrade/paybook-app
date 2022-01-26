@@ -1,16 +1,11 @@
 import 'package:built_value/serializer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logging/logging.dart';
 import 'package:paybook_app/data/collections/charges_collection.dart';
-import 'package:paybook_app/data/models/book/abstract_book_base_model.dart';
 import 'package:paybook_app/data/models/charge/abstract_charge_base_model.dart';
 import 'package:paybook_app/data/repository/db_document.dart';
 import 'package:paybook_app/data/repository/document_repository.dart';
-import 'package:paybook_app/data/repository/document_repository_model.dart';
 import 'package:paybook_app/http/charge_dto.dart';
-import 'package:paybook_app/http/http_client.dart';
 import 'package:paybook_app/http/http_service.dart';
-import 'package:paybook_app/services/enum_charge_type.dart';
 
 abstract class IChargeService<T extends AbstractChargeBaseModel> {
   Future create(T model);
@@ -26,7 +21,7 @@ abstract class IChargeService<T extends AbstractChargeBaseModel> {
 }
 
 class ChargeService<T extends AbstractChargeBaseModel> implements IChargeService<T> {
-  final log = Logger('CobrancaService');
+  final log = Logger('ChargeService');
 
   final ChargesCollection _chargesCollection;
 

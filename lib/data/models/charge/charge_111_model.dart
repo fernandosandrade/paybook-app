@@ -7,7 +7,7 @@ import 'package:paybook_app/globals/serializers.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:paybook_app/data/models/destinatario.dart';
 import 'package:paybook_app/services/enum_charge_type.dart';
-import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/services/enum_charge_status.dart';
 import 'package:paybook_app/data/models/payment_link_preview_model.dart';
 
 part 'charge_111_model.g.dart';

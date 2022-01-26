@@ -5,7 +5,7 @@ import 'package:paybook_app/data/models/payment_link_preview_model.dart';
 import 'package:paybook_app/data/repository/db_document.dart';
 import 'package:paybook_app/data/repository/repository_collection_path.dart';
 import 'package:paybook_app/services/enum_charge_type.dart';
-import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/services/enum_charge_status.dart';
 import 'package:paybook_app/services/enum_link_status.dart';
 import 'package:test/test.dart';
 
@@ -27,7 +27,7 @@ void main() {
       ..amount = 100
       ..creationDate = DateTime.now().toUtc()
       ..expirationDate = DateTime.now().add(Duration(days: 1)).toUtc()
-      ..status = EnumCobrancaStatus.waiting_payment
+      ..status = EnumChargeStatus.waiting_payment
       ..receiver = Destinatario((d) => d
         ..nome = "fernando"
         ..email = "email@gmail.com"

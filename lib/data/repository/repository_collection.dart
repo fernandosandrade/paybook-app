@@ -11,14 +11,13 @@ abstract class IRepositoryCollection {
   Future<DBDocument?> findFirst({required String field, required Object value});
   Future<List<DBDocument>> findAll({required String field, required Object value});
   Stream<List<DBDocument>> findAllAsStream({required String field, required Object value});
+  Future<List<DBDocument>> listAll();
   Stream<List<DBDocument>> listAllAsStream();
 }
 
 class RepositoryCollection implements IRepositoryCollection {
   /// collection referenced by this instance
   late final CollectionReference<Map<String, dynamic>> collectionReference;
-
-  late final CollectionReference collectionReference2;
 
   RepositoryCollection(String collectionPath) {
     this.collectionReference = RepositoryProvider.instance.collection(collectionPath);
@@ -55,13 +54,19 @@ class RepositoryCollection implements IRepositoryCollection {
   }
 
   @override
+  Future<List<DBDocument>> listAll() {
+    return this.collectionReference.asDBDocumentListFuture();
+  }
+
+  @override
   Stream<List<DBDocument>> listAllAsStream() {
     return this.collectionReference.asDBDocumentListStream();
     // .snapshots()
     // .map((query) => query.docs.map((doc) => DBDocument.fromDocumentSnapshot(doc)).toList());
   }
 
-  //dispose will be called automatically
   @override
   void dispose() {}
+  //dispose will be called automatically
+
 }

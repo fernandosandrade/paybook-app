@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 import 'package:paybook_app/globals/preconditions.dart';
 import 'package:paybook_app/modules/books/book101/book_101_form_bindings.dart';
 import 'package:paybook_app/modules/books/book101/book_101_form_page.dart';
-import 'package:paybook_app/modules/books/book_101_bindings.dart';
-import 'package:paybook_app/modules/books/book_101_controller.dart';
-import 'package:paybook_app/modules/books/book_101_page.dart';
-import 'package:paybook_app/modules/books/book_201_controller.dart';
+import 'package:paybook_app/modules/books/book_101_home_bindings.dart';
+import 'package:paybook_app/modules/books/book_101_home_page.dart';
 import 'package:paybook_app/modules/books/book_201_page.dart';
+import 'package:paybook_app/modules/books/charge111/charge_111_details_bindings.dart';
+import 'package:paybook_app/modules/books/charge111/charge_111_details_page.dart';
 import 'package:paybook_app/modules/books/charge111/charge_111_form_bindings.dart';
 import 'package:paybook_app/modules/books/charge111/charge_111_form_page.dart';
 import 'package:paybook_app/modules/books/no_book_page.dart';
@@ -38,9 +38,9 @@ abstract class AppPages {
   static final book101pages = [
     GetPage(
         name: AppRoutes.Books.homeBook101URLTemplate,
-        page: () => Book101Page(Preconditions.checkNotNull(
+        page: () => Book101HomePage(Preconditions.checkNotNull(
             Get.parameters[AppRoutes.Books.parameterBookId], 'nenhum book definido')),
-        binding: Book101Bindings()),
+        binding: Book101HomeBindings()),
     GetPage(
         name: AppRoutes.Books.newBook101FormURLTemplate,
         page: () => Book101FormPage(),
@@ -57,6 +57,10 @@ abstract class AppPages {
         name: AppRoutes.Charges.editCharge111FormURLTemplate,
         page: () => Charge111FormPage(),
         binding: Charge111FormBinding()),
+    GetPage(
+        name: AppRoutes.Charges.detailsCharge111FormURLTemplate,
+        page: () => Charge111DetailsPage(),
+        binding: Charge111DetailsBinding()),
   ];
 
   // all pages involving book 201 and its charges

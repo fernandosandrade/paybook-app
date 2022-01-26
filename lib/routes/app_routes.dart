@@ -117,6 +117,18 @@ class _Charges {
   /// route for edit charge: ``/charges/101/:book_id/111/:charge_id``
   final editCharge111FormURLTemplate =
       '/charges/101/:${_Books._parameter_book_id}/111/:${_Charges._parameter_charge_id}';
+
+  String chargeDetailsURLBuild(
+      {required EnumBookType tipoBook,
+      required EnumChargeType tipoCobranca,
+      required String bookId,
+      required String chargeId}) {
+    return '/charges/${tipoBook.wireNumber}/$bookId/${tipoCobranca.wireNumber}/details/$chargeId';
+  }
+
+  /// route for charge details: ``/charges/101/:book_id/111/details/:charge_id``
+  final detailsCharge111FormURLTemplate =
+      '/charges/101/:${_Books._parameter_book_id}/111/details/:${_Charges._parameter_charge_id}';
 }
 
 class _PaymentLinks {

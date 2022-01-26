@@ -7,13 +7,12 @@ import 'package:paybook_app/globals/enum_form_action.dart';
 import 'package:paybook_app/themes/app_text_style.dart';
 import 'package:paybook_app/themes/default_icons.dart';
 import 'package:paybook_app/utils/currency_pt_br_input_formatter.dart';
+import 'package:paybook_app/utils/formatters.dart';
 import 'package:paybook_app/widgets/custom_widget.dart';
 
 import 'charge_111_form_controller.dart';
 
 class Charge111FormPage extends GetView<Charge111FormController> {
-  final _dateFormat = DateFormat('dd/MM/yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -121,7 +120,7 @@ class Charge111FormPage extends GetView<Charge111FormController> {
           decoration: InputDecoration(labelText: 'vencimento', border: InputBorder.none),
           child: Obx(
             () => Text(
-              _dateFormat.format(controller.dataVencimento.value),
+              Formatters.simpleDate(controller.dataVencimento.value),
               textAlign: TextAlign.center,
               style: AppTextStyle.medio,
             ),
@@ -263,7 +262,7 @@ class Charge111FormPage extends GetView<Charge111FormController> {
   Future _datePicker() async {
     DateTime? picked = await showDatePicker(
         context: Get.context!,
-        initialDate: controller.dpInitialDate!,
+        initialDate: controller.dpInitialDate,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)));
     if (picked != null) {

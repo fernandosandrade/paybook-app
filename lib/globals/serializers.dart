@@ -11,7 +11,7 @@ import 'package:paybook_app/data/models/payment_link_preview_model.dart';
 import 'package:paybook_app/data/models/user_model.dart';
 import 'package:paybook_app/data/repository/timestamp_serializer_plugin.dart';
 import 'package:paybook_app/http/charge_dto.dart';
-import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/services/enum_charge_status.dart';
 import 'package:paybook_app/services/enum_link_status.dart';
 import 'package:paybook_app/services/enum_book_type.dart';
 import 'package:paybook_app/services/enum_charge_type.dart';
@@ -37,7 +37,7 @@ part 'serializers.g.dart';
   ChargeDto,
 
   //enums
-  EnumCobrancaStatus,
+  EnumChargeStatus,
   EnumBookType,
   EnumChargeType,
   EnumLinkStatus,

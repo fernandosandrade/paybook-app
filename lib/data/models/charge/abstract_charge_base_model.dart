@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:paybook_app/data/repository/document_repository_model.dart';
-import 'package:paybook_app/services/enum_cobranca_status.dart';
+import 'package:paybook_app/services/enum_charge_status.dart';
 import 'package:paybook_app/services/enum_charge_type.dart';
 
 import '../destinatario.dart';
@@ -21,7 +21,7 @@ abstract class AbstractChargeBaseModel implements DocumentRepositoryModel {
 
   Destinatario get receiver;
 
-  EnumCobrancaStatus get status;
+  EnumChargeStatus get status;
 
   @BuiltValueField(wireName: "payment_links")
   BuiltList<PaymentLinkPreviewModel> get paymentLinks;

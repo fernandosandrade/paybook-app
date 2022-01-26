@@ -109,7 +109,8 @@ class LoginPage extends StatelessWidget {
             .loginWithGoogle()
             //.then((value) => Get.offNamed(AppRoutes.HOME))
             .then((value) => loginController.isInAsyncCall.value = false,
-                onError: (error) => Get.snackbar('loggin erros', 'occurrer an erros while loggin with google'));
+                onError: (error) =>
+                    Get.snackbar('loggin erros', 'occurrer an erros while loggin with google'));
       },
     );
   }
@@ -169,8 +170,9 @@ class LoginPage extends StatelessWidget {
             color: Colors.grey,
           ),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0))),
-      validator: (value) =>
-          GetUtils.isLengthGreaterOrEqual(value, 8) ? null : 'senha deve possuir no mínimo 8 caracteres',
+      validator: (value) => GetUtils.isLengthGreaterOrEqual(value, 8)
+          ? null
+          : 'senha deve possuir no mínimo 8 caracteres',
       onSaved: (value) => _senha = value?.trim(),
     );
   }
@@ -214,16 +216,18 @@ class LoginPage extends StatelessWidget {
     return TextButton(
         child: Row(
           children: <Widget>[
-            Icon(DefaultIcons.ADD_USER, size: 14),
+            Icon(DefaultIcons.add_user, size: 14),
             Text(' novo usuario', style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic))
           ],
         ),
-        onPressed: () => Get.snackbar('registro de usuario', 'registro de usuario nao implementado'));
+        onPressed: () =>
+            Get.snackbar('registro de usuario', 'registro de usuario nao implementado'));
   }
 
   Widget _forgotPasswordButton() {
     return TextButton(
-        child: Text('esqueceu sua senha?', style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+        child: Text('esqueceu sua senha?',
+            style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
         onPressed: () => Get.snackbar('recuperar senha', 'recuperacao de senha nao implementado'));
   }
 }

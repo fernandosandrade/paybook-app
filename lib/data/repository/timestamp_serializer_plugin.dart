@@ -11,7 +11,7 @@ class TimestampSerializerPlugin implements SerializerPlugin {
   @override
   Object? afterSerialize(Object? object, FullType specifiedType) {
     if (object != null && object is int && specifiedType.root == DateTime)
-      return Timestamp.fromMicrosecondsSinceEpoch(object!);
+      return Timestamp.fromMicrosecondsSinceEpoch(object);
     return object;
   }
 

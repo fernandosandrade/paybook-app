@@ -40,10 +40,10 @@ class DefaultIcons {
   static const IconData EMAIL_1 = Icons.mail;
   // static const IconData EMAIL_1 = Ionicons.md_mail;
 
-  static const IconData USER_1 = Icons.person;
+  static const IconData user_1 = Icons.person;
   // static const IconData USUARIO_1 = AntDesign.user;
 
-  static const IconData ADD_USER = Icons.person_add;
+  static const IconData add_user = Icons.person_add;
 
   static const IconData google = FontAwesome.google;
 
@@ -54,4 +54,8 @@ class DefaultIcons {
   static const IconData copia = Icons.content_copy;
 
   static const IconData conta = Icons.account_balance;
+
+  static const IconData money = Icons.attach_money;
+
+  static const IconData link = Icons.link;
 }
